@@ -3,10 +3,10 @@
 
 using System;
 using System.Collections.Generic;
-using Core.Scripts.Localizations;
+using DGGLocalization.Data;
 using UnityEngine.UIElements;
 
-namespace LocalizationsTools_V2.Editor
+namespace DGGLocalization.Editor
 {
     public class LanguagesWindow : EditorCustomWindow<LanguagesWindow>
     {

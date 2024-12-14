@@ -1,7 +1,7 @@
 {
-  "name": "com.dark_dgg.localization_tools",
-  "version": "0.3.0",
-  "displayName": "LocalizationTools",
+  "name": "com.dark_dgg.dgglocalization",
+  "version": "1.0.0",
+  "displayName": "DGG Localization",
   "description": "Package for localization",
   "unity": "2022.3",
   "unityRelease": "0f1",

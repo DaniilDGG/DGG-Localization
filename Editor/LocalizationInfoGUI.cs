@@ -1,8 +1,8 @@
-using Core.Scripts.Localizations.Unity.Base;
+using DGGLocalization.Unity.Base;
 using UnityEditor;
 using UnityEngine;
 
-namespace LocalizationsTools_V2.Editor
+namespace DGGLocalization.Editor
 {
     [CustomEditor(typeof(LocalizationInfo))]
     public class LocalizationInfoGUI : UnityEditor.Editor

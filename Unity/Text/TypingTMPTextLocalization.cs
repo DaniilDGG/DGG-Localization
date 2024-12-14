@@ -2,12 +2,12 @@
 //Licensed under the Apache License, Version 2.0
 
 using System;
-using Core.Scripts.Localizations.Unity.Base;
 using Cysharp.Threading.Tasks;
+using DGGLocalization.Unity.Base;
 using TMPro;
 using UnityEngine;
 
-namespace LocalizationsTools_V2.Unity.Text
+namespace DGGLocalization.Unity.Text
 {
     [RequireComponent(typeof(LocalizationInfo))]
     public sealed class TypingTMPTextLocalization : MonoBehaviour

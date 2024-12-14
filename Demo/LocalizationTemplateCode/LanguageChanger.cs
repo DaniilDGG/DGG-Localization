@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-namespace Core.Scripts.Localizations.Demo.LocalizationTemplateCode
+namespace DGGLocalization.Demo.LocalizationTemplateCode
 {
     public class LanguageChanger : MonoBehaviour
     {

@@ -1,8 +1,8 @@
-using Core.Scripts.Localizations;
+using DGGLocalization.Data;
 using UnityEditor;
 using UnityEngine;
 
-namespace LocalizationsTools_V2.Editor
+namespace DGGLocalization.Editor
 {
     [CustomPropertyDrawer(typeof(LocalizationString))]
     public class TMPDropdownLocalizationGUI : PropertyDrawer

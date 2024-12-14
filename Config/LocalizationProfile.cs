@@ -4,10 +4,10 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
+using DGGLocalization.Data;
 using UnityEngine;
 
-namespace Core.Scripts.Localizations.Config
+namespace DGGLocalization.Config
 {
     [CreateAssetMenu(fileName = "Localization Profile", menuName = "Localization/LocalizationProfile", order = 1)]
     public class LocalizationProfile : ScriptableObject
@@ -15,26 +15,19 @@ namespace Core.Scripts.Localizations.Config
         #region Fields
 
         [SerializeField] private string _localizationFile = "localization.loc";
-        private Localization _localization = new();
-
+        
         #region Propeties
 
         private string MainPath { get; } = Application.streamingAssetsPath;
+        
         public string LocalizationFile => _localizationFile;
-        public LocalizationData[] LocalizationDates => _localization.Localizations;
+        public string LocalizationPath => Path.Combine(MainPath, _localizationFile);
+        //TODO refactor
+        public LocalizationData[] LocalizationDates => null;
 
         #endregion
 
         #endregion
-
-        /// <summary>
-        /// Initialization of the localization system, is the entry point.
-        /// </summary>
-        public void InitLocalizationSystem()
-        {
-            Load();
-            ReloadLocalizationController();
-        }
 
         /// <summary>
         /// Set localization changes and save.
@@ -43,14 +36,12 @@ namespace Core.Scripts.Localizations.Config
         /// <param name="languageData">data for localization.</param>
         public void SetLocalization(string localizationCode, LanguageData[] languageData)
         {
-            _localization.SetLocalization(localizationCode, new List<LanguageData>(languageData));
-            HandleSet();
+            // TODO set
         }
 
         public void SetLocalizations(List<LocalizationData> localizationDates)
         {
-            _localization.SetLocalization(localizationDates);
-            HandleSet();
+            // TODO set
         }
 
         /// <summary>
@@ -60,57 +51,12 @@ namespace Core.Scripts.Localizations.Config
         public void SetLanguages(List<Language> languages)
         {
             SetLanguagesWithoutSave(languages);
-            HandleSet();
         }
 
         /// <summary>
         /// Set language changes without save.
         /// </summary>
         /// <param name="languages">New languages.</param>
-        public void SetLanguagesWithoutSave(List<Language> languages) => _localization.SetLocalization(languages.ToArray());
-
-        private void HandleSet()
-        {
-            Save();
-            ReloadLocalizationController();
-        }
-
-        private void ReloadLocalizationController()
-        {
-            LocalizationController.InitLocalization(_localization.Languages, _localization.Localizations);
-        }
-
-        private void Load()
-        {
-            var path = Path.Combine(MainPath, _localizationFile);
-
-            if (!File.Exists(path)) return;
-            
-            var json = File.ReadAllText(path);
-            _localization = JsonUtility.FromJson<Localization>(json);
-        }
-
-        private void Save()
-        {
-            var text = JsonUtility.ToJson(_localization, true);
-            var path = Path.Combine(MainPath, _localizationFile);
-            
-            try
-            {
-                var folder = Path.GetDirectoryName(path);
-                
-                if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);
-                
-                using var fs = File.Create(path);
-                
-                var info = new UTF8Encoding(true).GetBytes(text);
-                fs.Write(info, 0, info.Length);
-                fs.Close();
-            }
-            catch (Exception e)
-            {
-                Debug.LogError(e);
-            }
-        }
+        public void SetLanguagesWithoutSave(List<Language> languages) => throw new NotImplementedException(); //TODO set
     }
 }

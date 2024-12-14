@@ -5,17 +5,21 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Core.Scripts.Localizations
+namespace DGGLocalization.Data
 {
     [Serializable]
     public class Localization
     {
         #region Fields
 
+        [SerializeField] private string _name;
+        
         [SerializeField] private List<LocalizationData> _localizations = new();
         [SerializeField] private Language[] _languages = {new("en", "english")};
 
         #region Propeties
+
+        public string Name => _name;
 
         public LocalizationData[] Localizations => _localizations.ToArray();
         public Language[] Languages => _languages;
@@ -101,5 +105,7 @@ namespace Core.Scripts.Localizations
 
             return languageDates;
         }
+
+        public Localization(string name) => _name = name;
     }
 }

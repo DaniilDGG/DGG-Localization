@@ -3,12 +3,12 @@
 
 using System;
 using System.Linq;
-using Core.Scripts.Localizations;
-using Core.Scripts.Localizations.Config;
+using DGGLocalization.Config;
+using DGGLocalization.Data;
 using UnityEditor;
 using UnityEngine;
 
-namespace LocalizationsTools_V2.Editor
+namespace DGGLocalization.Editor
 {
     public static class LocalizationEditor
     {
@@ -73,29 +73,27 @@ namespace LocalizationsTools_V2.Editor
 
         public static void Init()
         {
+            //TODO init localization
+            
             const string assetPath = "Assets/Resources/LocalizationProfile.asset";
 
-            if (!_localizationProfile)
-            {
-                _localizationProfile = LocalizationController.GetProfile();
-                
-                if (!_localizationProfile)
-                {
-                    _localizationProfile = ScriptableObject.CreateInstance<LocalizationProfile>();
+            if (_localizationProfile) return;
+            
+            _localizationProfile = LocalizationController.GetProfile();
+
+            if (_localizationProfile) return;
+            
+            _localizationProfile = ScriptableObject.CreateInstance<LocalizationProfile>();
                     
-                    var folder = System.IO.Path.GetDirectoryName(assetPath);
+            var folder = System.IO.Path.GetDirectoryName(assetPath);
                 
-                    if (!System.IO.Directory.Exists(folder)) System.IO.Directory.CreateDirectory(folder);
+            if (!System.IO.Directory.Exists(folder)) System.IO.Directory.CreateDirectory(folder);
 
-                    AssetDatabase.CreateAsset(_localizationProfile, assetPath);
-                    AssetDatabase.SaveAssets();
+            AssetDatabase.CreateAsset(_localizationProfile, assetPath);
+            AssetDatabase.SaveAssets();
 
-                    EditorUtility.FocusProjectWindow();
-                    Selection.activeObject = _localizationProfile;
-                }
-            }
-
-            _localizationProfile.InitLocalizationSystem();
+            EditorUtility.FocusProjectWindow();
+            Selection.activeObject = _localizationProfile;
         }
 
         private class StatsInLanguage

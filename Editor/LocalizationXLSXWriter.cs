@@ -3,13 +3,13 @@
 
 using System.Collections.Generic;
 using System.IO;
-using Core.Scripts.Localizations;
+using DGGLocalization.Data;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using UnityEditor;
 using UnityEngine;
 
-namespace LocalizationsTools_V2.Editor
+namespace DGGLocalization.Editor
 {
     public static class LocalizationXlsxWriter
     {

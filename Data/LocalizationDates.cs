@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Core.Scripts.Localizations
+namespace DGGLocalization.Data
 {
     [Serializable]
     public class Language : LanguageShort

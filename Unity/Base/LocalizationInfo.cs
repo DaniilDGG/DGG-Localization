@@ -1,10 +1,11 @@
 //Copyright 2023 Daniil Glagolev
 //Licensed under the Apache License, Version 2.0
 
+using DGGLocalization.Data;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Core.Scripts.Localizations.Unity.Base
+namespace DGGLocalization.Unity.Base
 {
     public sealed class LocalizationInfo : MonoBehaviour
     {

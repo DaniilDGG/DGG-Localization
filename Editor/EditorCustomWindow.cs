@@ -5,7 +5,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace LocalizationsTools_V2.Editor
+namespace DGGLocalization.Editor
 {
     public class EditorCustomWindow<T> : EditorWindow where T : EditorCustomWindow<T>
     {
