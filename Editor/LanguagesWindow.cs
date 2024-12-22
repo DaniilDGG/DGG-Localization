@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using DGGLocalization.Data;
+using DGGLocalization.Editor.Helpers;
 using UnityEngine.UIElements;
 
 namespace DGGLocalization.Editor
@@ -12,33 +13,43 @@ namespace DGGLocalization.Editor
     {
         #region Fields
 
-        public event Action<List<Language>> OnSaveLanguages;
+        private VisualElement _content;
         
         private readonly List<TextField> _codes = new();
         private readonly List<TextField> _names = new();
-        
+
+        #region Events
+
+        public event Action<List<Language>> OnSaveLanguages;
+
         #endregion
         
-        private void CreateGUI()
-        {
-            Root = new VisualElement();
+        #endregion
 
+        #region Unity Methods
+
+        protected override void OnEnable()
+        {
+            base.OnEnable();
+            
             var label = new Label("Current Languages:");
             
-            rootVisualElement.Add(label);
-            rootVisualElement.Add(Root);
+            Root.Add(label);
 
-            for (var index = 0; index < LocalizationController.Languages.Length; index++)
-            {
-                _codes.Add(CreateTextInput(LocalizationController.Languages[index].LanguageCode, "language code: "));
-                _names.Add(CreateTextInput(LocalizationController.Languages[index].LanguageName, "language name: "));
-            }
+            _content = new VisualElement();
+            
+            Root.Add(_content);
+        }
+
+        private void CreateGUI()
+        {
+            foreach (var language in LocalizationController.Languages) Add(language.LanguageCode, language.LanguageName);
             
             var buttonAdd = new Button
             {
                 text = "Add"
             };
-            buttonAdd.clicked += Add;
+            buttonAdd.clicked += delegate{Add("_", "_");};
             rootVisualElement.Add(buttonAdd);
             
             var buttonRemove = new Button
@@ -56,21 +67,23 @@ namespace DGGLocalization.Editor
             rootVisualElement.Add(button);
         }
 
+        #endregion
+
         private void Remove()
         {
             var index = _codes.Count - 1;
             
-            Root.Remove(_codes[index]);
-            Root.Remove(_names[index]);
+            _content.Remove(_codes[index]);
+            _content.Remove(_names[index]);
             
             _codes.RemoveAt(index);
             _names.RemoveAt(index);
         }
         
-        private void Add()
+        private void Add(string languageCode, string languageName)
         {
-            _codes.Add(CreateTextInput("DefaultCode", "language code: "));
-            _names.Add(CreateTextInput("DefaultName", "language name: "));
+            _codes.Add(TextInputHelper.CreateTextInput(languageCode, "language code: ", _content));
+            _names.Add(TextInputHelper.CreateTextInput(languageName, "language name: ", _content));
         }
         
         private void Save()

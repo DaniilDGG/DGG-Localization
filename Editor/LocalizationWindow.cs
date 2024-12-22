@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using DGGLocalization.Data;
+using DGGLocalization.Editor.Helpers;
 using UnityEngine.UIElements;
 
 namespace DGGLocalization.Editor
@@ -12,26 +13,36 @@ namespace DGGLocalization.Editor
     {
         #region Fields
 
-        public event Action<string, LanguageData[]> OnSaveLocalization;
+        private VisualElement _content;
 
         private VisualElement _visualElementCode;
         private VisualElement _visualElementLocalizations;
 
         private TextField _codeField;
-        private List<TextField> _localizationFields = new();
 
         private string _code;
+        
+        private readonly List<TextField> _localizationFields = new();
+
+        #region Events
+
+        public event Action<string, LanguageData[]> OnSaveLocalization;
 
         #endregion
-        
-        private void CreateGUI()
-        {
-            Root = new VisualElement();
 
-            var label = new Label("Localization");
+        #endregion
+
+        #region Unity Methods
+
+        protected override void OnEnable()
+        {
+            base.OnEnable();
             
-            rootVisualElement.Add(label);
-            rootVisualElement.Add(Root);
+            var label = new Label("Localization");
+            _content = new VisualElement();
+            
+            Root.Add(label);
+            Root.Add(_content);
 
             _visualElementCode = new VisualElement();
             _visualElementLocalizations = new ScrollView
@@ -43,7 +54,10 @@ namespace DGGLocalization.Editor
                 horizontalScrollerVisibility = ScrollerVisibility.Hidden,
                 verticalScrollerVisibility = ScrollerVisibility.Auto
             };
-            
+        }
+
+        private void CreateGUI()
+        {
             var save = new Button
             {
                 text = "Save"
@@ -65,17 +79,19 @@ namespace DGGLocalization.Editor
             continueButton.clicked += Continue;
             _visualElementCode.Add(continueButton);
 
-            _codeField = CreateTextInput("localizationCode", "code: " ,  _visualElementCode);
+            _codeField = TextInputHelper.CreateTextInput("localizationCode", "code: " ,  _visualElementCode);
 
             for (var index = 0; index < LocalizationController.Languages.Length; index++)
             {
-                var input = CreateTextInput("", LocalizationController.Languages[index].LanguageCode, _visualElementLocalizations, true);
+                var input = TextInputHelper.CreateTextInput("", LocalizationController.Languages[index].LanguageCode, _visualElementLocalizations, true);
                 
                 _localizationFields.Add(input);
             }
             
-            Root.Add(_visualElementCode);
+            _content.Add(_visualElementCode);
         }
+
+        #endregion
 
         private void Save()
         {
@@ -94,8 +110,8 @@ namespace DGGLocalization.Editor
             _code = "";
             _codeField.value = _code;
             
-            Root.Add(_visualElementCode);
-            Root.Remove(_visualElementLocalizations);
+            _content.Add(_visualElementCode);
+            _content.Remove(_visualElementLocalizations);
         }
         
         private void Continue()
@@ -106,8 +122,8 @@ namespace DGGLocalization.Editor
 
         private void OpenCodeWindow()
         {
-            Root.Remove(_visualElementCode);
-            Root.Add(_visualElementLocalizations);
+            _content.Remove(_visualElementCode);
+            _content.Add(_visualElementLocalizations);
 
             var localizationData = LocalizationController.GetLocalization(_code);
 

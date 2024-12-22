@@ -2,6 +2,7 @@
 //Licensed under the Apache License, Version 2.0
 
 using System.Collections.Generic;
+using DGGLocalization.Editor.Helpers;
 using UnityEngine.Events;
 using UnityEngine.UIElements;
 
@@ -11,36 +12,49 @@ namespace DGGLocalization.Editor
     {
         #region Fields
 
+        private VisualElement _content;
+        
         private Toggle _replaceLocalizationInFile;
         private readonly List<Toggle> _languagesToggles = new();
 
-        public event UnityAction<ParametersImport> OnImport; 
+        #region Events
 
+        public event UnityAction<ParametersImport> OnImport; 
+        
         #endregion
 
-        private void Update() => LanguagesVisible();
+        #endregion
+        
+        #region Unity Methods
 
-        private void CreateGUI()
+        protected override void OnEnable()
         {
-            Root = new VisualElement();
+            base.OnEnable();
             
-            rootVisualElement.Add(new Label("Import XLSX parameters"));
+            _content = new VisualElement();
+            
+            Root.Add(new Label("Import XLSX parameters"));
 
             _replaceLocalizationInFile = new Toggle("Replace only those localizations that are in the file")
             {
                 value = true
             };
 
-            rootVisualElement.Add(_replaceLocalizationInFile);
+            Root.Add(_replaceLocalizationInFile);
+            Root.Add(new Label("Languages import:"));
+            
+            Root.Add(_content);
+        }
 
-            rootVisualElement.Add(new Label("Languages import:"));
-            rootVisualElement.Add(Root);
+        private void Update() => LanguagesVisible();
 
+        private void CreateGUI()
+        {
             for (var index = 0; index < LocalizationController.Languages.Length; index++)
             {
                 var toggle = new Toggle(LocalizationController.Languages[index].LanguageCode);
                 
-                Root.Add(toggle);
+                _content.Add(toggle);
                 _languagesToggles.Add(toggle);
             }
             
@@ -48,14 +62,14 @@ namespace DGGLocalization.Editor
             {
                 text = "Import"
             };
+            
             buttonImport.clicked += Import;
             rootVisualElement.Add(buttonImport);
         }
 
-        private void LanguagesVisible()
-        {
-            Root.visible = _replaceLocalizationInFile.value;
-        }
+        #endregion
+
+        private void LanguagesVisible() => _content.visible = _replaceLocalizationInFile.value;
         
         private void Import()
         {
