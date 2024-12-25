@@ -41,6 +41,8 @@ namespace Core.Scripts.Localizations.Unity.Base
             HandleOnLanguageSwitch(LocalizationController.GetCurrentLanguage());
         }
 
+        private void OnDestroy() => LocalizationController.OnLanguageSwitch -= HandleOnLanguageSwitch;
+        
         #endregion
 
         private void HandleOnLanguageSwitch(Language language)
