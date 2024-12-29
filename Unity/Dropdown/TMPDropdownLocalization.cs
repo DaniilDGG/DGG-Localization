@@ -45,6 +45,8 @@ namespace DGGLocalization.Unity.Dropdown
             HandleOnLanguageSwitch(LocalizationController.GetCurrentLanguage());
         }
 
+        private void OnDestroy() => LocalizationController.OnLanguageSwitch -= HandleOnLanguageSwitch;
+
 #if UNITY_EDITOR
         private void OnValidate()
         {

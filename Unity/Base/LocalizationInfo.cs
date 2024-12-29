@@ -42,6 +42,8 @@ namespace DGGLocalization.Unity.Base
             HandleOnLanguageSwitch(LocalizationController.GetCurrentLanguage());
         }
 
+        private void OnDestroy() => LocalizationController.OnLanguageSwitch -= HandleOnLanguageSwitch;
+        
         #endregion
 
         private void HandleOnLanguageSwitch(Language language)
