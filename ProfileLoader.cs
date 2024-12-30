@@ -5,6 +5,7 @@ using System.Text;
 using DGGLocalization.Config;
 using DGGLocalization.Data;
 using DGGLocalization.Loaders;
+using Unity.Plastic.Newtonsoft.Json;
 using UnityEngine;
 
 namespace DGGLocalization
@@ -30,7 +31,7 @@ namespace DGGLocalization
                 }
                 
                 var json = File.ReadAllText(path);
-                var data = JsonUtility.FromJson<Localization>(json);
+                var data = JsonConvert.DeserializeObject<Localization>(json);
                 
                 if (data != null) dates.Add(data);
             }
@@ -49,11 +50,11 @@ namespace DGGLocalization
                 if (!File.Exists(path)) continue;
                 
                 var json = File.ReadAllText(path);
-                var localization = JsonUtility.FromJson<Localization>(json);
+                var localization = JsonConvert.DeserializeObject<Localization>(json);
                 
-                if (localization == null || localization.Name != data.Name) continue;
+                if (localization == null || localization.GUID != data.GUID) continue;
                 
-                var text = JsonUtility.ToJson(localization, true);
+                var text = JsonConvert.SerializeObject(localization, Formatting.Indented);
             
                 try
                 {

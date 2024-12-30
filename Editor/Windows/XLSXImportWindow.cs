@@ -6,7 +6,7 @@ using DGGLocalization.Editor.Helpers;
 using UnityEngine.Events;
 using UnityEngine.UIElements;
 
-namespace DGGLocalization.Editor
+namespace DGGLocalization.Editor.Windows
 {
     public class XlsxImportWindow : EditorCustomWindow<XlsxImportWindow>
     {
@@ -30,6 +30,8 @@ namespace DGGLocalization.Editor
         protected override void OnEnable()
         {
             base.OnEnable();
+            
+            LocalizationEditor.Init();
             
             _content = new VisualElement();
             

@@ -7,7 +7,7 @@ using DGGLocalization.Data;
 using DGGLocalization.Editor.Helpers;
 using UnityEngine.UIElements;
 
-namespace DGGLocalization.Editor
+namespace DGGLocalization.Editor.Windows
 {
     public class LanguagesWindow : EditorCustomWindow<LanguagesWindow>
     {
@@ -31,6 +31,8 @@ namespace DGGLocalization.Editor
         protected override void OnEnable()
         {
             base.OnEnable();
+            
+            LocalizationEditor.Init();
             
             var label = new Label("Current Languages:");
             

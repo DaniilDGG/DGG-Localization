@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using Unity.Plastic.Newtonsoft.Json;
 using UnityEngine;
 
 namespace DGGLocalization.Data
@@ -12,14 +13,14 @@ namespace DGGLocalization.Data
     {
         #region Fields
 
-        [SerializeField] private string _name;
+        [JsonProperty] private Guid _guid = Guid.NewGuid();
         
-        [SerializeField] private List<LocalizationData> _localizations = new();
-        [SerializeField] private Language[] _languages = {new("en", "english")};
+        [JsonProperty] private List<LocalizationData> _localizations = new();
+        [JsonProperty] private Language[] _languages = {new("en", "english")};
 
         #region Propeties
 
-        public string Name => _name;
+        public Guid GUID => _guid;
 
         public LocalizationData[] Localizations => _localizations.ToArray();
         public Language[] Languages => _languages;
@@ -105,7 +106,5 @@ namespace DGGLocalization.Data
 
             return languageDates;
         }
-
-        public Localization(string name) => _name = name;
     }
 }

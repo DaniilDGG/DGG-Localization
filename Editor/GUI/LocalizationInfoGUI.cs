@@ -2,7 +2,7 @@ using DGGLocalization.Unity.Base;
 using UnityEditor;
 using UnityEngine;
 
-namespace DGGLocalization.Editor
+namespace DGGLocalization.Editor.GUI
 {
     [CustomEditor(typeof(LocalizationInfo))]
     public class LocalizationInfoGUI : UnityEditor.Editor
@@ -12,10 +12,8 @@ namespace DGGLocalization.Editor
             DrawDefaultInspector();
 
             var info = (LocalizationInfo)target;
-            if (GUILayout.Button("Open Localization"))
-            {
-                LocalizationEditor.OpenLocalizationSetting(info.LocalizationCode);
-            }
+            
+            if (GUILayout.Button("Open Localization")) LocalizationEditor.OpenLocalizationSetting(info.LocalizationCode);
         }
     }
 }

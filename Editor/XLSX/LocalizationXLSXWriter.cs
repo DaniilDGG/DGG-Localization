@@ -9,7 +9,7 @@ using NPOI.XSSF.UserModel;
 using UnityEditor;
 using UnityEngine;
 
-namespace DGGLocalization.Editor
+namespace DGGLocalization.Editor.XLSX
 {
     public static class LocalizationXlsxWriter
     {

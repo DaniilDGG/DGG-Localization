@@ -15,22 +15,48 @@ namespace DGGLocalization
 
         #region Propeties
 
+        /// <summary>
+        /// Get languages loaded.
+        /// </summary>
         public static Language[] Languages => _languages;
 
         #endregion
 
+        /// <summary>
+        /// Called when the language is changed.
+        /// </summary>
         public static event Action<Language> OnLanguageSwitch;
 
         #endregion
         
+        /// <summary>
+        /// Set language by index.
+        /// </summary>
         public static void SwitchLanguage(int index)
         {
             _currentLanguage = _languages[index];
             OnLanguageSwitch?.Invoke(_currentLanguage);
         }
 
+        /// <summary>
+        /// Set language by code.
+        /// </summary>
+        public static void SwitchLanguage(string code)
+        {
+            var language = GetLanguageByCode(code);
+            
+            _currentLanguage = language;
+            OnLanguageSwitch?.Invoke(_currentLanguage);
+        }
+
+        /// <summary>
+        /// Get current language.
+        /// </summary>
         public static Language GetCurrentLanguage() => _currentLanguage;
 
+        /// <summary>
+        /// Get current language index.
+        /// </summary>
         public static int GetCurrentLanguageIndex()
         {
             for (var index = 0; index < _languages.Length; index++)
@@ -41,6 +67,9 @@ namespace DGGLocalization
             return -1;
         }
         
+        /// <summary>
+        /// Get language by code.
+        /// </summary>
         public static Language GetLanguageByCode(string code)
         {
             for (var index = 0; index < _languages.Length; index++)

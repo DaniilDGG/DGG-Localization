@@ -3,18 +3,21 @@
 
 using System;
 using System.Linq;
-using DGGLocalization.Config;
+using System.Runtime.CompilerServices;
 using DGGLocalization.Data;
 using DGGLocalization.Loaders;
 using UnityEngine;
 
+[assembly: InternalsVisibleTo("AD_LocalizationEditor")]
 namespace DGGLocalization
 {
     public static partial class LocalizationController
     {
+        #region Initialization
+
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void Initialize() => LoadLocalizations();
-
+        
         internal static void LoadLocalizations()
         {
             var types = AppDomain.CurrentDomain.GetAssemblies()
@@ -30,10 +33,19 @@ namespace DGGLocalization
 
                 foreach (var localization in localizations) AddLocalization(localization);
             }
+
+            if (_languages.Length == 0) return;
             
             SwitchLanguage(0);
         }
 
+        #endregion
+
+        #region Add
+
+        /// <summary>
+        /// Add an additional localization package.
+        /// </summary>
         public static void AddLocalization(Localization localization)
         {
             var languages = _languages.ToList();
@@ -52,12 +64,7 @@ namespace DGGLocalization
             
             _languages = languages.ToArray();
         }
-        
-        public static LocalizationProfile GetProfile()
-        {
-            var profiles = Resources.LoadAll<LocalizationProfile>("");
-                
-            return profiles.Length > 0 ? profiles[0] : null;
-        }
+
+        #endregion
     }
 }

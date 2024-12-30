@@ -7,7 +7,7 @@ using DGGLocalization.Data;
 using DGGLocalization.Editor.Helpers;
 using UnityEngine.UIElements;
 
-namespace DGGLocalization.Editor
+namespace DGGLocalization.Editor.Windows
 {
     public class LocalizationWindow : EditorCustomWindow<LocalizationWindow>
     {
@@ -37,6 +37,8 @@ namespace DGGLocalization.Editor
         protected override void OnEnable()
         {
             base.OnEnable();
+            
+            LocalizationEditor.Init();
             
             var label = new Label("Localization");
             _content = new VisualElement();

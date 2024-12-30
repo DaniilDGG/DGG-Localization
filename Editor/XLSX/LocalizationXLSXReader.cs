@@ -5,12 +5,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using DGGLocalization.Data;
+using DGGLocalization.Editor.Windows;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using UnityEditor;
 using UnityEngine;
 
-namespace DGGLocalization.Editor
+namespace DGGLocalization.Editor.XLSX
 {
     public static class LocalizationXlsxReader
     {
@@ -20,8 +21,6 @@ namespace DGGLocalization.Editor
         [MenuItem("Localization/Import XLSX")]
         private static void ReadLocalizationInFile()
         {
-            LocalizationEditor.Init();
-
             _filePath = EditorUtility.OpenFilePanel("Localization file", "Assets", "xlsx");
             
             if (string.IsNullOrEmpty(_filePath))

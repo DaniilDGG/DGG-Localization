@@ -2,7 +2,7 @@ using DGGLocalization.Data;
 using UnityEditor;
 using UnityEngine;
 
-namespace DGGLocalization.Editor
+namespace DGGLocalization.Editor.GUI
 {
     [CustomPropertyDrawer(typeof(LocalizationString))]
     public class TMPDropdownLocalizationGUI : PropertyDrawer
@@ -14,6 +14,7 @@ namespace DGGLocalization.Editor
             EditorGUI.BeginProperty(position, label, property);
 
             var valueProperty = property.FindPropertyRelative("_value");
+            
             if (valueProperty == null)
             {
                 EditorGUI.EndProperty();
@@ -25,7 +26,7 @@ namespace DGGLocalization.Editor
 
             valueProperty.stringValue = EditorGUI.TextField(textFieldRect, valueProperty.stringValue);
 
-            if (GUI.Button(buttonRect, "Open Localization")) LocalizationEditor.OpenLocalizationSetting(valueProperty.stringValue);
+            if (UnityEngine.GUI.Button(buttonRect, "Open Localization")) LocalizationEditor.OpenLocalizationSetting(valueProperty.stringValue);
 
             EditorGUI.EndProperty();
         }
