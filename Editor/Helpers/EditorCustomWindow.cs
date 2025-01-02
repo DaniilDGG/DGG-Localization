@@ -7,12 +7,23 @@ using UnityEngine.UIElements;
 
 namespace DGGLocalization.Editor.Helpers
 {
-    public partial class EditorCustomWindow<T> : EditorWindow where T : EditorCustomWindow<T>
+    public abstract partial class EditorCustomWindow<T> : EditorWindow where T : EditorCustomWindow<T>
     {
         #region Fields
-
+        
         private static T _editorCustomWindow;
 
+        
+
+        #endregion
+
+        #region Propeties
+
+        /// <summary>
+        /// Displayed window name in the editor.
+        /// </summary>
+        public abstract string DisplayName { get; }
+        
         protected VisualElement Root { get; private set; }
 
         #endregion
@@ -44,7 +55,7 @@ namespace DGGLocalization.Editor.Helpers
             if (_editorCustomWindow) return _editorCustomWindow;
             
             _editorCustomWindow = GetWindow<T>();
-            _editorCustomWindow.titleContent = new GUIContent("Editor Custom Window");
+            _editorCustomWindow.titleContent = new GUIContent(_editorCustomWindow.DisplayName);
 
             return _editorCustomWindow;
         }

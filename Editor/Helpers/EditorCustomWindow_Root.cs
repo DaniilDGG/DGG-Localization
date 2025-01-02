@@ -2,7 +2,7 @@ using UnityEngine.UIElements;
 
 namespace DGGLocalization.Editor.Helpers
 {
-    public partial class EditorCustomWindow<T>
+    public abstract partial class EditorCustomWindow<T>
     {
         /// <summary>
         /// Used to customize the Root Scroll View space of a window.

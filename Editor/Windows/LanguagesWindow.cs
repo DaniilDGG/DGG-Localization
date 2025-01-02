@@ -21,6 +21,12 @@ namespace DGGLocalization.Editor.Windows
         
         #endregion
 
+        #region Propeties
+        
+        public override string DisplayName => "Languages settings";
+
+        #endregion
+
         #region Unity Methods
 
         protected override void OnEnable()

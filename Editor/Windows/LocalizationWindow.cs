@@ -29,6 +29,12 @@ namespace DGGLocalization.Editor.Windows
         private Localization _currentLocalization;
 
         #endregion
+        
+        #region Propeties
+        
+        public override string DisplayName => "Localization settings";
+
+        #endregion
 
         #region Unity Methods
 
@@ -110,23 +116,40 @@ namespace DGGLocalization.Editor.Windows
 
         private void Continue()
         {
-            var localization = FindLocalizationByCode(_code);
+            var localizations = FindLocalizationByCode(_code);
 
-            if (localization == null)
+            switch (localizations.Count)
             {
-                var selected = LocalizationSelectWindow.Open();
-
-                if (selected != null)
+                case 0:
                 {
-                    _currentLocalization = selected;
-                    OpenCodeWindow();
+                    var selected = LocalizationSelectWindow.Open();
+
+                    if (selected != null)
+                    {
+                        _currentLocalization = selected;
+                        OpenCodeWindow();
+                    }
+                    else Debug.LogWarning("Selected null!");
+
+                    break;
                 }
-                else Debug.LogWarning("Selected null!");
-            }
-            else
-            {
-                _currentLocalization = localization;
-                OpenCodeWindow();
+                case 1:
+                    _currentLocalization = localizations[0].data;
+                    OpenCodeWindow();
+                    break;
+                default:
+                {
+                    var selected = LocalizationSelectWindow.Open(localizations);
+
+                    if (selected != null)
+                    {
+                        _currentLocalization = selected;
+                        OpenCodeWindow();
+                    }
+                    else Debug.LogWarning("Selected null!");
+
+                    break;
+                }
             }
         }
 
@@ -184,14 +207,16 @@ namespace DGGLocalization.Editor.Windows
             
         }
 
-        private Localization FindLocalizationByCode(string code)
+        private List<(Localization data, string displayName)> FindLocalizationByCode(string code)
         {
-            foreach (var (localization, _) in LocalizationEditor.Localizations)
+            var localizations = new List<(Localization data, string displayName)>();
+            
+            foreach (var (localization, displayName) in LocalizationEditor.Localizations)
             {
-                if (Array.Exists(localization.Localizations, data => data.LocalizationCode == code)) return localization;
+                if (Array.Exists(localization.Localizations, data => data.LocalizationCode == code)) localizations.Add((localization, displayName));
             }
 
-            return null;
+            return localizations;
         }
 
         public void OpenCodeWindow(string code)

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using DGGLocalization.Data;
 using UnityEditor;
 using UnityEngine;
@@ -8,6 +9,8 @@ namespace DGGLocalization.Editor.Windows
     {
         #region Fields
 
+        private List<(Localization data, string displayName)> _localizations = new();
+        
         private Localization _localization;
 
         #endregion
@@ -23,8 +26,22 @@ namespace DGGLocalization.Editor.Windows
                     Debug.LogError("No localization files found!");
                     return null;
             }
+
+            return Open(LocalizationEditor.Localizations);
+        }
+
+        public static Localization Open(List<(Localization data, string displayName)> target)
+        {
+            if (target.Count == 0)
+            {
+                Debug.LogError("No localizations!");
+                
+                return null;
+            }
             
             var window = CreateInstance<LocalizationSelectWindow>();
+
+            window._localizations = target;
             
             window.titleContent = new GUIContent("Localization select");
             window.position = new Rect(Screen.width / 2, Screen.height / 2, 250, 150);
@@ -40,7 +57,7 @@ namespace DGGLocalization.Editor.Windows
 
             GUILayout.Space(20);
 
-            foreach (var localization in LocalizationEditor.Localizations)
+            foreach (var localization in _localizations)
             {
                 if (!GUILayout.Button(localization.displayName)) continue;
                 
