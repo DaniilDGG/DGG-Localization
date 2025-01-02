@@ -1,8 +1,8 @@
-using Core.Scripts.Localizations.Unity.Base;
+using DGGLocalization.Unity.Base;
 using TMPro;
 using UnityEngine;
 
-namespace LocalizationsTools_V2.Unity.Text
+namespace DGGLocalization.Unity.Text
 {
     public abstract class AbstractTextLocalization : MonoBehaviour
     {

@@ -1,108 +1,81 @@
 //Copyright 2023 Daniil Glagolev
 //Licensed under the Apache License, Version 2.0
 
-using System;
-using System.Linq;
-using Core.Scripts.Localizations;
-using Core.Scripts.Localizations.Config;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using DGGLocalization.Config;
+using DGGLocalization.Data;
+using DGGLocalization.Loaders;
 using UnityEditor;
 using UnityEngine;
 
-namespace LocalizationsTools_V2.Editor
+[assembly: InternalsVisibleTo("AD_LocalizationEditorGUI")]
+
+namespace DGGLocalization.Editor
 {
-    public static class LocalizationEditor
+    public static partial class LocalizationEditor
     {
         #region Fields
 
-        private static LocalizationProfile _localizationProfile;
-
+        private static List<(Localization data, string displayName)> _dates = new();
+        
         #region Propeties
 
-        public static LocalizationProfile LocalizationProfile => _localizationProfile;
+        public static List<(Localization data, string displayName)> Localizations => _dates;
 
         #endregion
         
         #endregion
+
+        internal static void Reboot()
+        {
+            _dates = Loader.LoadLocalizations();
+            LocalizationController.Initialize(_dates);
+            
+            Debug.Log($"Used: {_dates.Count} packages.");
+        }
         
-        [MenuItem("Localization/Language settings")]
-        private static void LanguagesSetting()
+        private static void Reload(Localization newValue)
         {
-            Init();
-            LanguagesWindow.ShowWindow().OnSaveLanguages += _localizationProfile.SetLanguages;
-        }
-
-        [MenuItem("Localization/Localization settings")]
-        private static void HandleLocalizationSetting() => LocalizationSetting();
-        [MenuItem("Localization/Words Count")]
-        private static void GetWordsCount()
-        {
-            Init();
-
-            var stats = LocalizationController.Languages.Select(t => new StatsInLanguage() { Language = t }).ToList();
-
-            foreach (var data in _localizationProfile.LocalizationDates)
+            for (var index = 0; index < Localizations.Count; index++)
             {
-                foreach (var languageData in data.Data)
-                {
-                    var stat = stats.Find(language => language.Language.LanguageCode == languageData.Language);
+                var container = Localizations[index];
+                
+                if (container.data.GUID != newValue.GUID) continue;
 
-                    stat.Chars += languageData.Localization.Length;
-                    stat.Words += languageData.Localization.Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries).Length;
-                }
+                Localizations[index] = (newValue, container.displayName);
+
+                break;
             }
-
-            foreach (var stat in stats)
-            {
-                Debug.Log($"{(string)stat.Language}, chars: {stat.Chars}, words: {stat.Words}");
-            }
+            
+            LocalizationController.Initialize(_dates);
         }
-
-        private static LocalizationWindow LocalizationSetting()
+        
+        static LocalizationEditor()
         {
-            Init();
-            var localizationWindow = LocalizationWindow.ShowWindow();
-            localizationWindow.OnSaveLocalization += _localizationProfile.SetLocalization;
-            return localizationWindow;
-        }
+            Loader.OnSet += Reload;
 
-        public static void OpenLocalizationSetting(string code)
-        {
-            var localizationWindow = LocalizationSetting();
-            localizationWindow.OpenCodeWindow(code);
-        }
+            Reboot();
 
-        public static void Init()
-        {
+            if (_dates.Count != 0) return;
+            
+            Debug.Log("No localization data were found. Standard profile is generated.");
+            
             const string assetPath = "Assets/Resources/LocalizationProfile.asset";
-
-            if (!_localizationProfile)
-            {
-                _localizationProfile = LocalizationController.GetProfile();
-                
-                if (!_localizationProfile)
-                {
-                    _localizationProfile = ScriptableObject.CreateInstance<LocalizationProfile>();
+            
+            var profile = ScriptableObject.CreateInstance<LocalizationProfile>();
                     
-                    var folder = System.IO.Path.GetDirectoryName(assetPath);
+            var folder = System.IO.Path.GetDirectoryName(assetPath);
                 
-                    if (!System.IO.Directory.Exists(folder)) System.IO.Directory.CreateDirectory(folder);
+            if (!System.IO.Directory.Exists(folder)) System.IO.Directory.CreateDirectory(folder);
 
-                    AssetDatabase.CreateAsset(_localizationProfile, assetPath);
-                    AssetDatabase.SaveAssets();
+            AssetDatabase.CreateAsset(profile, assetPath);
+            AssetDatabase.SaveAssets();
 
-                    EditorUtility.FocusProjectWindow();
-                    Selection.activeObject = _localizationProfile;
-                }
-            }
+            EditorUtility.FocusProjectWindow();
+            Selection.activeObject = profile;
 
-            _localizationProfile.InitLocalizationSystem();
-        }
-
-        private class StatsInLanguage
-        {
-            public int Chars;
-            public int Words;
-            public LanguageShort Language;
+            Reboot();
         }
     }
 }

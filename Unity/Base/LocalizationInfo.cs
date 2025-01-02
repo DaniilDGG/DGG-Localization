@@ -1,10 +1,11 @@
 //Copyright 2023 Daniil Glagolev
 //Licensed under the Apache License, Version 2.0
 
+using DGGLocalization.Data;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Core.Scripts.Localizations.Unity.Base
+namespace DGGLocalization.Unity.Base
 {
     public sealed class LocalizationInfo : MonoBehaviour
     {
@@ -13,7 +14,7 @@ namespace Core.Scripts.Localizations.Unity.Base
         [SerializeField] private string _localizationCode;
         
         private LocalizationData _localizationData;
-        private string _currentLanguageCode;
+        private LanguageShort _currentLanguageCode;
 
         private const string CustomCode = "customCode";
         
@@ -59,19 +60,26 @@ namespace Core.Scripts.Localizations.Unity.Base
         {
             if (_localizationData == null || _localizationData.Data.Count == 0)
             {
-                return "localization is null";
+                return "localization is null!";
             }
-            
-            return _localizationData.Data.Find(data => data.Language.LanguageCode == _currentLanguageCode).Localization;
+
+            return _localizationData.GetTargetLocalization(_currentLanguageCode).Localization;
         }
 
+        /// <summary>
+        /// Set localization by key.
+        /// </summary>
         public void SetLocalization(string localizationCode)
         {
             _localizationCode = localizationCode;
             _localizationData = LocalizationController.GetLocalization(_localizationCode);
+            
             OnSwitchLanguage?.Invoke(GetLocalization());
         }
 
+        /// <summary>
+        /// Set localization by LocalizationData.
+        /// </summary>
         public void SetLocalization(LocalizationData localizationData)
         {
             _localizationCode = CustomCode;

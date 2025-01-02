@@ -1,0 +1,20 @@
+{
+    "name": "AD_LocalizationEditorGUI",
+    "rootNamespace": "",
+    "references": [
+        "GUID:056b2886c9cb0b74e8cf3eaf8fa55599",
+        "GUID:9baec1e226b2fb2439754a222a7e238e",
+        "GUID:de599b578572fb742aac237783a84946"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

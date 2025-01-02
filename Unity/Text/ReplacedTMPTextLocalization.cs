@@ -1,8 +1,8 @@
 using System;
-using Core.Scripts.Localizations.Unity.Base;
+using DGGLocalization.Unity.Base;
 using UnityEngine;
 
-namespace LocalizationsTools_V2.Unity.Text
+namespace DGGLocalization.Unity.Text
 {
     [RequireComponent(typeof(LocalizationInfo))]
     public sealed class ReplacedTMPTextLocalization : AbstractTextLocalization

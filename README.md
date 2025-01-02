@@ -1,19 +1,18 @@
-# Localization Unity Tools
- Tools for creating localization in Unity
+# DGG Localization
+Modular localization system for the Unity engine.
 
-This is a localization tool created for the Unity engine.
+# Installation via UPM
 
-# Install via UPM Package
+First, install UniTask: https://github.com/Cysharp/UniTask?ysclid=lulo5ve1dr734166736736#upm-package  
+Then, install this package via git URL: https://github.com/DaniilDGG/DGG-Localization.git
 
-First, install UniTask: https://github.com/Cysharp/UniTask?ysclid=lulo5ve1dr734166736#upm-package
-After that, install via git URL this package: https://github.com/DaniilDGG/LocalizationsTools-V2.git
+# How to Use
 
-# How to use
+The default loader loads all localization files whose paths (relative to StreamingAssets) are specified in the LocalizationProfile, created in the Resources folder.  
+If this is not sufficient, you can create your own implementation of ILocalizationLoader.
 
-To get started with this localization tool, you must set up the languages using the Localization/Language settings window.
+First, you need to set the languages used in localization via Localization/Language settings.
+After that, the system is ready to work; all that remains is to define localization keys and place localization components in the scene.
 
-Next, add the localizations you need using the Localization/Localization Settings window, where you will need to first come up with a unique identifier for the localization item, and then set localizations for all the selected languages.
-After that, you can use the LocalizationInfo component, which receives localizations. Besides it, there is already a ready-made TMPTextLocalization that localizes text. To do this, you just need to enter a unique localization identifier.
-
-Also, to change the current language - use LocalizationController.SwitchLanguage(int language number, from 0) Example: Demo Scene.
-Also, the tool supports XLSX import and export, for editing localizations outside the Unity editor.
+To change the language, use LocalizationController.SwitchLanguage(int) or LocalizationController.SwitchLanguage(string). Example: Demo Scene.  
+Additionally, XLSX import and export are supported for editing localizations outside the Unity editor.

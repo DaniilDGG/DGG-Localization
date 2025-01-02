@@ -1,0 +1,3 @@
+<linker>
+    <assembly fullname="AD_LocalizationCore" preserve="all" />
+</linker>

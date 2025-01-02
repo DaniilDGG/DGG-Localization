@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
-using Core.Scripts.Localizations;
+using DGGLocalization.Data;
 using TMPro;
 using UnityEngine;
 
-namespace LocalizationsTools_V2.Unity.Dropdown
+namespace DGGLocalization.Unity.Dropdown
 {
     public class TMPDropdownLocalization : MonoBehaviour
     {
