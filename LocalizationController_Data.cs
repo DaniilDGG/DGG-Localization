@@ -12,7 +12,7 @@ namespace DGGLocalization
     {
         #region Fields
 
-        private static Dictionary<string, List<LanguageData>> _localizations;
+        private static Dictionary<string, List<LanguageData>> _localizations = new();
         
         #endregion
 
@@ -35,7 +35,7 @@ namespace DGGLocalization
         {
             var localization = GetLocalization(localizationCode);
 
-            return localization == null ? new LanguageData() : localization.Data.Find(data => GetCurrentLanguage().LanguageCode == data.Language);
+            return localization.GetTargetLocalization(GetCurrentLanguage());
         }
     }
 }

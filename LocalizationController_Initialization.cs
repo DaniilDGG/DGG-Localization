@@ -1,7 +1,7 @@
 //Copyright 2024 Daniil Glagolev
 //Licensed under the Apache License, Version 2.0
 
-using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using DGGLocalization.Data;
@@ -16,24 +16,14 @@ namespace DGGLocalization
         #region Initialization
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-        private static void Initialize() => LoadLocalizations();
-        
-        internal static void LoadLocalizations()
-        {
-            var types = AppDomain.CurrentDomain.GetAssemblies()
-                .SelectMany(a => a.GetTypes())
-                .Where(t => t.IsClass && !t.IsAbstract && typeof(ILocalizationLoader).IsAssignableFrom(t) && t.GetCustomAttributes(typeof(LocalizationLoaderAttribute), true).Any());
+        private static void Initialize() => Initialize(Loader.LoadLocalizations());
 
+        internal static void Initialize(List<(Localization data, string displayName)> dates)
+        {
             _localizations.Clear();
             
-            foreach (var type in types)
-            {
-                var loader = (ILocalizationLoader)Activator.CreateInstance(type);
-                var localizations = loader.GetLocalizationDates();
-
-                foreach (var localization in localizations) AddLocalization(localization);
-            }
-
+            foreach (var localization in dates) AddLocalization(localization.data);
+            
             if (_languages.Length == 0) return;
             
             SwitchLanguage(0);
@@ -59,7 +49,26 @@ namespace DGGLocalization
 
             foreach (var data in localization.Localizations)
             {
-                _localizations[data.LocalizationCode] = data.Data;
+                if (!_localizations.ContainsKey(data.LocalizationCode))
+                {
+                    _localizations[data.LocalizationCode] = data.Data;
+
+                    continue;
+                }
+                
+                var target = _localizations[data.LocalizationCode];
+
+                foreach (var languageData in data.Data)
+                {
+                    if (target.FindIndex(t => t.Language == languageData.Language) != -1)
+                    {
+                        Debug.LogWarning($"Duplicate! {languageData.Language}:{languageData.Localization} ignored!");
+                        
+                        continue;
+                    }
+                    
+                    target.Add(languageData);
+                }
             }
             
             _languages = languages.ToArray();

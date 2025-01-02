@@ -10,7 +10,7 @@ namespace DGGLocalization
     {
         #region Fields
 
-        private static Language[] _languages;
+        private static Language[] _languages = Array.Empty<Language>();
         private static Language _currentLanguage;
 
         #region Propeties

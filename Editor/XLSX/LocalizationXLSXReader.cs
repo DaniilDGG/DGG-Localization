@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using DGGLocalization.Data;
 using DGGLocalization.Editor.Windows;
+using DGGLocalization.Loaders;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using UnityEditor;
@@ -34,11 +35,14 @@ namespace DGGLocalization.Editor.XLSX
                 _workbook = new XSSFWorkbook(fileStream);
             }
 
-            var window = XlsxImportWindow.ShowWindow();
-            window.OnImport += StartImport;
+            var container = XlsxImportWindow.Open();
+
+            if (!container.HasValue) return;
+            
+            StartImport(container.Value.parameters, container.Value.target);
         }
 
-        private static void StartImport(ParametersImport parametersImport)
+        private static void StartImport(ParametersImport parametersImport, Localization target)
         {
             var sheet = _workbook.GetSheetAt(0);
 
@@ -50,7 +54,7 @@ namespace DGGLocalization.Editor.XLSX
                 var row = sheet.GetRow(0);
                 var cell = row.Cells[index];
 
-                var find = LocalizationController.Languages.FirstOrDefault(x => cell.StringCellValue == x.LanguageCode);
+                var find = target.Languages.FirstOrDefault(x => cell.StringCellValue == x.LanguageCode);
                 var language = new Language(cell.StringCellValue, (find == null ? $"{index}" : find.LanguageName));
                 
                 languages.Add(language);
@@ -103,8 +107,11 @@ namespace DGGLocalization.Editor.XLSX
             
             if (!parametersImport.ReplaceLocalizationInFile)
             {
-                LocalizationEditor.LocalizationProfile.SetLanguagesWithoutSave(languages);
-                LocalizationEditor.LocalizationProfile.SetLocalizations(localizations);
+                target.SetLocalization(languages.ToArray());
+                target.SetLocalization(localizations);
+                
+                Loader.SetLocalization(target);
+                
                 return;
             }
 
@@ -114,7 +121,7 @@ namespace DGGLocalization.Editor.XLSX
                 
                 Debug.Log($"Final: {localizations[index].LocalizationCode}");
 
-                var current = LocalizationController.GetLocalization(localizations[index].LocalizationCode);
+                var current = target.GetLocalization(localizations[index].LocalizationCode);
                 
                 if (current == null) continue;
 
@@ -131,8 +138,10 @@ namespace DGGLocalization.Editor.XLSX
                     currentData[index2] = newData;
                 }
                 
-                LocalizationEditor.LocalizationProfile.SetLocalization(localizations[index].LocalizationCode, currentData.ToArray());
+                target.SetLocalization(localizations[index].LocalizationCode, currentData);
             }
+            
+            Loader.SetLocalization(target);
         }
     }
 }

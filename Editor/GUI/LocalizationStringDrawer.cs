@@ -5,7 +5,7 @@ using UnityEngine;
 namespace DGGLocalization.Editor.GUI
 {
     [CustomPropertyDrawer(typeof(LocalizationString))]
-    public class TMPDropdownLocalizationGUI : PropertyDrawer
+    public class LocalizationStringDrawer : PropertyDrawer
     {
         private const float ButtonWidth = 120f; 
         

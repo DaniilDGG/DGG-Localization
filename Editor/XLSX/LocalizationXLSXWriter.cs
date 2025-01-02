@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using System.IO;
 using DGGLocalization.Data;
+using DGGLocalization.Editor.Windows;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using UnityEditor;
@@ -19,7 +20,7 @@ namespace DGGLocalization.Editor.XLSX
         [MenuItem("Localization/Export to XLSX")]
         private static void WriteLocalizationInFile()
         {
-            LocalizationEditor.Init();
+            var localization = LocalizationSelectWindow.Open();
             
             _filePath = EditorUtility.SaveFilePanel("Localization file", "Assets", "localization.xlsx","xlsx");
             
@@ -29,7 +30,7 @@ namespace DGGLocalization.Editor.XLSX
                 return;
             }
             
-            var languages = new List<Language>(LocalizationController.Languages);
+            var languages = new List<Language>(localization.Languages);
             
             IWorkbook workbook = new XSSFWorkbook();
 
@@ -57,7 +58,7 @@ namespace DGGLocalization.Editor.XLSX
                 cell.SetCellValue(languages[index].LanguageCode);
                 cell.CellStyle = cellStyleBold;
                 
-                Debug.Log($"index - {index + 1}, language - {LocalizationController.Languages[index].LanguageName}");
+                Debug.Log($"index - {index + 1}, language - {languages[index].LanguageName}");
             }
 
             var fontDefault = workbook.CreateFont();
@@ -67,11 +68,11 @@ namespace DGGLocalization.Editor.XLSX
             cellStyleDefault.SetFont(fontDefault);
             cellStyleDefault.WrapText = true;
             
-            for (var index = 0; index < LocalizationEditor.LocalizationProfile.LocalizationDates.Length; index++)
+            for (var index = 0; index < localization.Localizations.Length; index++)
             {
                 var rowLocalizations = sheet.CreateRow(index + 1);
                 
-                var localizationData = LocalizationEditor.LocalizationProfile.LocalizationDates[index];
+                var localizationData = localization.Localizations[index];
                 
                 var code = rowLocalizations.CreateCell(0);
                 

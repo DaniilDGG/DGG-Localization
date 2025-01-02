@@ -8,7 +8,7 @@ namespace DGGLocalization.Loaders
         /// <summary>
         /// Get localization dates
         /// </summary>
-        public List<Localization> GetLocalizationDates();
+        public List<(Localization data, string displayName)> GetLocalizationDates();
         /// <summary>
         /// Set new localization dates
         /// </summary>

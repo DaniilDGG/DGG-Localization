@@ -5,12 +5,18 @@ using DGGLocalization.Data;
 
 namespace DGGLocalization.Loaders
 {
-    public static class Loader
+    internal static class Loader
     {
-        public static List<Localization> LoadLocalizations()
+        #region Events
+
+        public static event Action<Localization> OnSet;
+
+        #endregion
+        
+        public static List<(Localization data, string displayName)> LoadLocalizations()
         {
             var types = GetLoaders();
-            var dates = new List<Localization>();
+            var dates = new List<(Localization, string)>();
             
             foreach (var type in types)
             {
@@ -33,6 +39,8 @@ namespace DGGLocalization.Loaders
 
                 if (loader.SetLocalizationData(localization)) return;
             }
+            
+            OnSet?.Invoke(localization);
         }
         
         private static IEnumerable<Type> GetLoaders() => AppDomain.CurrentDomain.GetAssemblies()

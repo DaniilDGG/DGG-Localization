@@ -1,10 +1,9 @@
-//Copyright 2023 Daniil Glagolev
-//Licensed under the Apache License, Version 2.0
-
-using System;
 using System.Collections.Generic;
 using DGGLocalization.Data;
 using DGGLocalization.Editor.Helpers;
+using DGGLocalization.Loaders;
+using UnityEditor;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace DGGLocalization.Editor.Windows
@@ -18,11 +17,7 @@ namespace DGGLocalization.Editor.Windows
         private readonly List<TextField> _codes = new();
         private readonly List<TextField> _names = new();
 
-        #region Events
-
-        public event Action<List<Language>> OnSaveLanguages;
-
-        #endregion
+        private Localization _currentLocalization;
         
         #endregion
 
@@ -31,73 +26,95 @@ namespace DGGLocalization.Editor.Windows
         protected override void OnEnable()
         {
             base.OnEnable();
-            
-            LocalizationEditor.Init();
-            
+
             var label = new Label("Current Languages:");
-            
             Root.Add(label);
 
             _content = new VisualElement();
-            
             Root.Add(_content);
+            
+            SelectLocalization();
         }
 
-        private void CreateGUI()
+        private void SelectLocalization()
         {
-            foreach (var language in LocalizationController.Languages) Add(language.LanguageCode, language.LanguageName);
-            
-            var buttonAdd = new Button
+            var selected = LocalizationSelectWindow.Open();
+
+            if (selected != null)
             {
-                text = "Add"
-            };
-            buttonAdd.clicked += delegate{Add("_", "_");};
-            rootVisualElement.Add(buttonAdd);
-            
-            var buttonRemove = new Button
+                _currentLocalization = selected;
+                RefreshUI();
+            }
+            else
             {
-                text = "Remove"
-            };
+                Debug.LogWarning("Localization selection canceled or no localization available.");
+                
+                EditorApplication.delayCall += Close;
+            }
+        }
+
+        private void RefreshUI()
+        {
+            _content.Clear();
+            _codes.Clear();
+            _names.Clear();
+
+            foreach (var language in _currentLocalization.Languages)
+            {
+                Add(language.LanguageCode, language.LanguageName);
+            }
+
+            CreateControlButtons();
+        }
+
+        private void CreateControlButtons()
+        {
+            var buttonAdd = new Button { text = "Add" };
+            buttonAdd.clicked += delegate { Add("_", "_"); };
+            Root.Add(buttonAdd);
+
+            var buttonRemove = new Button { text = "Remove" };
             buttonRemove.clicked += Remove;
-            rootVisualElement.Add(buttonRemove);
-            
-            var button = new Button
-            {
-                text = "Save"
-            };
-            button.clicked += Save;
-            rootVisualElement.Add(button);
+            Root.Add(buttonRemove);
+
+            var buttonSave = new Button { text = "Save" };
+            buttonSave.clicked += Save;
+            Root.Add(buttonSave);
         }
 
         #endregion
 
         private void Remove()
         {
+            if (_codes.Count == 0) return;
+
             var index = _codes.Count - 1;
-            
+
             _content.Remove(_codes[index]);
             _content.Remove(_names[index]);
-            
+
             _codes.RemoveAt(index);
             _names.RemoveAt(index);
         }
-        
+
         private void Add(string languageCode, string languageName)
         {
-            _codes.Add(TextInputHelper.CreateTextInput(languageCode, "language code: ", _content));
-            _names.Add(TextInputHelper.CreateTextInput(languageName, "language name: ", _content));
+            _codes.Add(TextInputHelper.CreateTextInput(languageCode, "Language Code: ", _content));
+            _names.Add(TextInputHelper.CreateTextInput(languageName, "Language Name: ", _content));
         }
-        
+
         private void Save()
         {
             var languages = new List<Language>();
 
             for (var index = 0; index < _codes.Count; index++)
             {
-                languages.Add(new Language(_codes[index].text, _names[index].text));
+                languages.Add(new Language(_codes[index].value, _names[index].value));
             }
-            
-            OnSaveLanguages?.Invoke(languages);
+
+            _currentLocalization.SetLocalization(languages.ToArray());
+
+            Loader.SetLocalization(_currentLocalization);
         }
     }
 }

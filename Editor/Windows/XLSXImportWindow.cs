@@ -2,74 +2,101 @@
 //Licensed under the Apache License, Version 2.0
 
 using System.Collections.Generic;
-using DGGLocalization.Editor.Helpers;
-using UnityEngine.Events;
+using DGGLocalization.Data;
+using UnityEditor;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace DGGLocalization.Editor.Windows
 {
-    public class XlsxImportWindow : EditorCustomWindow<XlsxImportWindow>
+    public class XlsxImportWindow : EditorWindow
     {
         #region Fields
-
+        
         private VisualElement _content;
         
         private Toggle _replaceLocalizationInFile;
         private readonly List<Toggle> _languagesToggles = new();
 
-        #region Events
-
-        public event UnityAction<ParametersImport> OnImport; 
-        
-        #endregion
+        private ParametersImport _parameters;
+        private Localization _localization;
 
         #endregion
         
         #region Unity Methods
 
-        protected override void OnEnable()
+        protected void OnEnable()
         {
-            base.OnEnable();
+            _content = new ScrollView()
+            {
+                style =
+                {
+                    flexGrow = 1, 
+                },
+                horizontalScrollerVisibility = ScrollerVisibility.Hidden,
+                verticalScrollerVisibility = ScrollerVisibility.Auto
+            };
             
-            LocalizationEditor.Init();
+            _content.Add(new Label("Languages import:"));
             
-            _content = new VisualElement();
-            
-            Root.Add(new Label("Import XLSX parameters"));
+            rootVisualElement.Add(new Label("Import XLSX parameters"));
 
             _replaceLocalizationInFile = new Toggle("Replace only those localizations that are in the file")
             {
                 value = true
             };
 
-            Root.Add(_replaceLocalizationInFile);
-            Root.Add(new Label("Languages import:"));
+            rootVisualElement.Add(_replaceLocalizationInFile);
             
-            Root.Add(_content);
-        }
-
-        private void Update() => LanguagesVisible();
-
-        private void CreateGUI()
-        {
-            for (var index = 0; index < LocalizationController.Languages.Length; index++)
-            {
-                var toggle = new Toggle(LocalizationController.Languages[index].LanguageCode);
-                
-                _content.Add(toggle);
-                _languagesToggles.Add(toggle);
-            }
+            rootVisualElement.Add(_content);
             
             var buttonImport = new Button
             {
                 text = "Import"
             };
-            
             buttonImport.clicked += Import;
             rootVisualElement.Add(buttonImport);
         }
 
+        private void OnGUI()
+        {
+            if (_localization is { Languages: not null })
+            {
+                for (var index = 0; index < _localization.Languages.Length; index++)
+                {
+                    if (_languagesToggles.Count > index) continue;
+                    
+                    var toggle = new Toggle(_localization.Languages[index].LanguageCode);
+                    _content.Add(toggle);
+                    _languagesToggles.Add(toggle);
+                }
+            }
+
+            LanguagesVisible();
+        }
+
         #endregion
+
+        // ReSharper disable PossibleLossOfFraction
+        public static (ParametersImport parameters, Localization target)? Open()
+        {
+            var localization = LocalizationSelectWindow.Open();
+
+            if (localization == null) return null;
+            
+            var window = CreateInstance<XlsxImportWindow>();
+
+            window._localization = localization;
+            
+            window.titleContent = new GUIContent("Import parameters");
+            window.position = new Rect(Screen.width / 2, Screen.height / 2, 500, 250);
+            
+            window.ShowModalUtility();
+
+            if (window._parameters == null) return null;
+            
+            return (window._parameters, window._localization);
+        }
 
         private void LanguagesVisible() => _content.visible = _replaceLocalizationInFile.value;
         
@@ -81,19 +108,17 @@ namespace DGGLocalization.Editor.Windows
             {
                 if (!_languagesToggles[index].value) continue;
                 
-                languages.Add(LocalizationController.Languages[index]);
+                languages.Add(_localization.Languages[index]);
             }
 
             if (languages.Count == 0 && _replaceLocalizationInFile.value) return;
 
-            var parameters = new ParametersImport()
+            _parameters = new ParametersImport()
             {
                 ReplaceLocalizationInFile = _replaceLocalizationInFile.value,
                 Languages = languages
             };
-            
-            OnImport?.Invoke(parameters);
-            
+
             Close();
         }
     }

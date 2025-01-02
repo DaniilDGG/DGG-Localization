@@ -1,5 +1,5 @@
 using System;
-using System.Linq;
+using System.Collections.Generic;
 using DGGLocalization.Data;
 using DGGLocalization.Editor.Windows;
 using UnityEditor;
@@ -18,31 +18,47 @@ namespace DGGLocalization.Editor
         #region Items
 
         [MenuItem("Localization/Language settings")]
-        private static void LanguagesSetting() => LanguagesWindow.ShowWindow().OnSaveLanguages += _localizationProfile.SetLanguages;
+        private static void LanguagesSetting() => LanguagesWindow.ShowWindow();
 
         [MenuItem("Localization/Localization settings")]
         private static void HandleLocalizationSetting() => LocalizationSetting();
         [MenuItem("Localization/Words Count")]
         private static void GetWordsCount()
         {
-            Init();
-
-            var stats = LocalizationController.Languages.Select(t => new StatsInLanguage() { Language = t }).ToList();
-
-            foreach (var data in _localizationProfile.LocalizationDates)
+            foreach (var container in Localizations)
             {
-                foreach (var languageData in data.Data)
+                var localization = container.data;
+                
+                var stats = new Dictionary<string, StatsInLanguage>();
+                
+                foreach (var language in localization.Languages)
                 {
-                    var stat = stats.Find(language => language.Language.LanguageCode == languageData.Language);
-
-                    stat.Chars += languageData.Localization.Length;
-                    stat.Words += languageData.Localization.Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries).Length;
+                    if (!stats.ContainsKey(language.LanguageCode))
+                    {
+                        stats[language.LanguageCode] = new StatsInLanguage
+                        {
+                            Language = language,
+                            Chars = 0,
+                            Words = 0
+                        };
+                    }
                 }
-            }
 
-            foreach (var stat in stats)
-            {
-                Debug.Log($"{(string)stat.Language}, chars: {stat.Chars}, words: {stat.Words}");
+                foreach (var localizationData in localization.Localizations)
+                {
+                    foreach (var languageData in localizationData.Data)
+                    {
+                        if (!stats.TryGetValue(languageData.Language.LanguageCode, out var stat)) continue;
+                        
+                        stat.Chars += languageData.Localization.Length;
+                        stat.Words += languageData.Localization.Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries).Length;
+                    }
+                }
+                
+                foreach (var stat in stats.Values)
+                {
+                    Debug.Log($"({container.displayName})-({stat.Language.LanguageCode}): chars: {stat.Chars}, words: {stat.Words}");
+                }
             }
         }
 
@@ -50,12 +66,7 @@ namespace DGGLocalization.Editor
 
         #region Set
 
-        private static LocalizationWindow LocalizationSetting()
-        {
-            var localizationWindow = LocalizationWindow.ShowWindow();
-            localizationWindow.OnSaveLocalization += _localizationProfile.SetLocalization;
-            return localizationWindow;
-        }
+        private static LocalizationWindow LocalizationSetting() => LocalizationWindow.ShowWindow();
 
         #endregion
 
@@ -65,6 +76,7 @@ namespace DGGLocalization.Editor
         {
             public int Chars;
             public int Words;
+            
             public LanguageShort Language;
         }
 

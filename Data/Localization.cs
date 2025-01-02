@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using Unity.Plastic.Newtonsoft.Json;
 using UnityEngine;
 
@@ -13,21 +14,44 @@ namespace DGGLocalization.Data
     {
         #region Fields
 
-        [JsonProperty] private Guid _guid = Guid.NewGuid();
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
+        [DefaultValue(typeof(Guid), "00000000-0000-0000-0000-000000000000")]
+        private Guid _guid = Guid.NewGuid();
         
         [JsonProperty] private List<LocalizationData> _localizations = new();
         [JsonProperty] private Language[] _languages = {new("en", "english")};
 
         #region Propeties
 
-        public Guid GUID => _guid;
+        [JsonIgnore] public Guid GUID => _guid;
 
-        public LocalizationData[] Localizations => _localizations.ToArray();
-        public Language[] Languages => _languages;
+        [JsonIgnore] public LocalizationData[] Localizations => _localizations.ToArray();
+        [JsonIgnore] public Language[] Languages => _languages;
+
+        #endregion
 
         #endregion
 
+        #region Get
+
+        /// <summary>
+        /// Obtain localization when a localization code is available.
+        /// </summary>
+        /// <param name="localizationCode">localization code, is a unique localization identifier.</param>
+        /// <returns>data for localization.</returns>
+        public LocalizationData GetLocalization(string localizationCode)
+        {
+            for (var index = 0; index < _localizations.Count; index++)
+            {
+                if (_localizations[index].LocalizationCode == localizationCode) return _localizations[index];
+            }
+
+            return null;
+        }
+
         #endregion
+
+        #region Set
 
         /// <summary>
         /// Set localization changes and save.
@@ -74,6 +98,8 @@ namespace DGGLocalization.Data
             
             FixLocalizations();
         }
+
+        #endregion
         
         private void FixLocalizations()
         {

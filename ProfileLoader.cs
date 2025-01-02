@@ -13,11 +13,11 @@ namespace DGGLocalization
     [LocalizationLoader]
     public class ProfileLoader : ILocalizationLoader
     {
-        public List<Localization> GetLocalizationDates()
+        public List<(Localization, string)> GetLocalizationDates()
         {
             var profiles = Resources.LoadAll<LocalizationProfile>("");
 
-            var dates = new List<Localization>();
+            var dates = new List<(Localization, string)>();
             
             foreach (var profile in profiles)
             {
@@ -27,13 +27,21 @@ namespace DGGLocalization
                 {
                     Debug.LogWarning($"Not exist [{path}]");
                     
+                    var localization = new Localization();
+                    
+                    localization.SetLocalization(new Language[]{new ("EN", "english")});
+                    
+                    dates.Add((localization, $"[P]{profile.name}"));
+                    
+                    WriteLocalizationData(localization, path);
+                    
                     continue;
                 }
                 
                 var json = File.ReadAllText(path);
                 var data = JsonConvert.DeserializeObject<Localization>(json);
                 
-                if (data != null) dates.Add(data);
+                if (data != null) dates.Add((data, $"[P]{profile.name}"));
             }
 
             return dates;
@@ -53,31 +61,37 @@ namespace DGGLocalization
                 var localization = JsonConvert.DeserializeObject<Localization>(json);
                 
                 if (localization == null || localization.GUID != data.GUID) continue;
-                
-                var text = JsonConvert.SerializeObject(localization, Formatting.Indented);
-            
-                try
-                {
-                    var folder = Path.GetDirectoryName(path);
-                
-                    if (folder != null && !Directory.Exists(folder)) Directory.CreateDirectory(folder);
-                
-                    using var fs = File.Create(path);
-                
-                    var info = new UTF8Encoding(true).GetBytes(text);
-                    fs.Write(info, 0, info.Length);
-                    fs.Close();
-                }
-                catch (Exception e)
-                {
-                    Debug.LogError(e);
-                    return true;
-                }
+
+                WriteLocalizationData(data, path);
 
                 return true;
             }
 
             return false;
+        }
+
+        private static void WriteLocalizationData(Localization data, string path)
+        {
+            var text = JsonConvert.SerializeObject(data, Formatting.Indented);
+            
+            try
+            {
+                var folder = Path.GetDirectoryName(path);
+                
+                if (folder != null && !Directory.Exists(folder)) Directory.CreateDirectory(folder);
+                
+                using var fs = File.Create(path);
+                
+                var info = new UTF8Encoding(true).GetBytes(text);
+                fs.Write(info, 0, info.Length);
+                fs.Close();
+                
+                Debug.Log($"Localization {data.GUID} has been successfully written to {path}");
+            }
+            catch (Exception e)
+            {
+                Debug.LogError(e);
+            }
         }
     }
 }

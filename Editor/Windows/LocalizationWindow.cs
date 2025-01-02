@@ -5,6 +5,8 @@ using System;
 using System.Collections.Generic;
 using DGGLocalization.Data;
 using DGGLocalization.Editor.Helpers;
+using DGGLocalization.Loaders;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace DGGLocalization.Editor.Windows
@@ -21,14 +23,10 @@ namespace DGGLocalization.Editor.Windows
         private TextField _codeField;
 
         private string _code;
-        
+
         private readonly List<TextField> _localizationFields = new();
 
-        #region Events
-
-        public event Action<string, LanguageData[]> OnSaveLocalization;
-
-        #endregion
+        private Localization _currentLocalization;
 
         #endregion
 
@@ -37,12 +35,10 @@ namespace DGGLocalization.Editor.Windows
         protected override void OnEnable()
         {
             base.OnEnable();
-            
-            LocalizationEditor.Init();
-            
+
             var label = new Label("Localization");
             _content = new VisualElement();
-            
+
             Root.Add(label);
             Root.Add(_content);
 
@@ -51,7 +47,7 @@ namespace DGGLocalization.Editor.Windows
             {
                 style =
                 {
-                    flexGrow = 1, 
+                    flexGrow = 1,
                 },
                 horizontalScrollerVisibility = ScrollerVisibility.Hidden,
                 verticalScrollerVisibility = ScrollerVisibility.Auto
@@ -60,36 +56,20 @@ namespace DGGLocalization.Editor.Windows
 
         private void CreateGUI()
         {
-            var save = new Button
-            {
-                text = "Save"
-            };
-            save.clicked += Save;
-            _visualElementLocalizations.Add(save);
-            
-            var returnButton = new Button
-            {
-                text = "return"
-            };
-            returnButton.clicked += Return;
-            _visualElementLocalizations.Add(returnButton);
-
             var continueButton = new Button
             {
-                text = "continue"
+                text = "Continue"
             };
-            continueButton.clicked += Continue;
+            continueButton.clicked += delegate
+            {
+                _code = _codeField.value;
+
+                Continue();
+            };
             _visualElementCode.Add(continueButton);
 
-            _codeField = TextInputHelper.CreateTextInput("localizationCode", "code: " ,  _visualElementCode);
+            _codeField = TextInputHelper.CreateTextInput("localizationCode", "Code: ", _visualElementCode);
 
-            for (var index = 0; index < LocalizationController.Languages.Length; index++)
-            {
-                var input = TextInputHelper.CreateTextInput("", LocalizationController.Languages[index].LanguageCode, _visualElementLocalizations, true);
-                
-                _localizationFields.Add(input);
-            }
-            
             _content.Add(_visualElementCode);
         }
 
@@ -97,59 +77,128 @@ namespace DGGLocalization.Editor.Windows
 
         private void Save()
         {
-            var languages = new LanguageData[_localizationFields.Count];
-
-            for (var index = 0; index < languages.Length; index++)
+            if (_currentLocalization == null)
             {
-                languages[index] = new LanguageData(LocalizationController.GetLanguageByCode(_localizationFields[index].label), _localizationFields[index].text);
+                Debug.LogError("No localization selected for saving.");
+                return;
             }
 
-            OnSaveLocalization?.Invoke(_code, languages);
+            var languageData = new List<LanguageData>();
+
+            foreach (var field in _localizationFields)
+            {
+                var language = Array.Find(_currentLocalization.Languages, lang => lang.LanguageCode == field.label);
+                if (language != null)
+                {
+                    languageData.Add(new LanguageData(language, field.value));
+                }
+            }
+
+            _currentLocalization.SetLocalization(_code, languageData);
+
+            Loader.SetLocalization(_currentLocalization);
         }
 
         private void Return()
         {
             _code = "";
             _codeField.value = _code;
-            
+
             _content.Add(_visualElementCode);
             _content.Remove(_visualElementLocalizations);
         }
-        
+
         private void Continue()
         {
-            _code = _codeField.value;
-            OpenCodeWindow();
+            var localization = FindLocalizationByCode(_code);
+
+            if (localization == null)
+            {
+                var selected = LocalizationSelectWindow.Open();
+
+                if (selected != null)
+                {
+                    _currentLocalization = selected;
+                    OpenCodeWindow();
+                }
+                else Debug.LogWarning("Selected null!");
+            }
+            else
+            {
+                _currentLocalization = localization;
+                OpenCodeWindow();
+            }
         }
 
         private void OpenCodeWindow()
         {
-            _content.Remove(_visualElementCode);
-            _content.Add(_visualElementLocalizations);
+            if (_content.Contains(_visualElementCode)) _content.Remove(_visualElementCode);
+            if (!_content.Contains(_visualElementLocalizations)) _content.Add(_visualElementLocalizations);
 
-            var localizationData = LocalizationController.GetLocalization(_code);
+            _localizationFields.Clear();
+            _visualElementLocalizations.Clear();
 
-            if (localizationData == null)
+            if (_currentLocalization == null)
             {
-                for (var index = 0; index < _localizationFields.Count; index++)
-                {
-                    _localizationFields[index].value = "empty";
-                }
-
+                Debug.LogError("No localization available to edit.");
                 return;
             }
-            
-            for (var index = 0; index < localizationData.Data.Count; index++)
+
+            var localizationData = Array.Find(_currentLocalization.Localizations, data => data.LocalizationCode == _code);
+
+            foreach (var language in _currentLocalization.Languages)
             {
-                _localizationFields[index].value = localizationData.Data[index].Localization;
-                _localizationFields[index].label = localizationData.Data[index].Language.LanguageCode;
+                var field = TextInputHelper.CreateTextInput(
+                    language.LanguageCode,
+                    language.LanguageCode,
+                    _visualElementLocalizations,
+                    true
+                );
+
+                if (localizationData != null)
+                {
+                    var languageData = localizationData.Data.Find(data => data.Language.LanguageCode == language.LanguageCode);
+                    field.value = languageData.Localization ?? "empty";
+                }
+                else
+                {
+                    field.value = "empty";
+                }
+
+                _localizationFields.Add(field);
             }
+            
+            var save = new Button
+            {
+                text = "Save"
+            };
+            save.clicked += Save;
+            _visualElementLocalizations.Add(save);
+
+            var returnButton = new Button
+            {
+                text = "Return"
+            };
+            returnButton.clicked += Return;
+            _visualElementLocalizations.Add(returnButton);
+            
+        }
+
+        private Localization FindLocalizationByCode(string code)
+        {
+            foreach (var (localization, _) in LocalizationEditor.Localizations)
+            {
+                if (Array.Exists(localization.Localizations, data => data.LocalizationCode == code)) return localization;
+            }
+
+            return null;
         }
 
         public void OpenCodeWindow(string code)
         {
             _code = code;
-            OpenCodeWindow();
+            
+            Continue();
         }
     }
 }
