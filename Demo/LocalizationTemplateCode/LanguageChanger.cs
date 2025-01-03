@@ -1,3 +1,6 @@
+//Copyright 2023 Daniil Glagolev
+//Licensed under the Apache License, Version 2.0
+
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
