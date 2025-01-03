@@ -8,7 +8,7 @@ using System.Text;
 using DGGLocalization.Config;
 using DGGLocalization.Data;
 using DGGLocalization.Loaders;
-using Unity.Plastic.Newtonsoft.Json;
+using Newtonsoft.Json;
 using UnityEngine;
 
 namespace DGGLocalization

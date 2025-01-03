@@ -2,7 +2,7 @@
 //Licensed under the Apache License, Version 2.0
 
 using System;
-using Unity.Plastic.Newtonsoft.Json;
+using Newtonsoft.Json;
 using UnityEngine;
 
 namespace DGGLocalization.Data
