@@ -19,9 +19,12 @@ namespace DGGLocalization.Editor.GUI
         
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            EditorGUI.PropertyField(position, property, label);
+            var propertyHeight = EditorGUI.GetPropertyHeight(property);
+            var propertyRect = new Rect(position.x, position.y, position.width, propertyHeight);
             
-            var buttonRect = new Rect(position.x, position.y + EditorGUI.GetPropertyHeight(property) + Padding, position.width, ButtonHeight);
+            EditorGUI.PropertyField(propertyRect, property, label);
+            
+            var buttonRect = new Rect(position.x, position.y + propertyHeight + Padding, position.width, ButtonHeight);
 
             if (!UnityEngine.GUI.Button(buttonRect, "Open Localization")) return;
             
