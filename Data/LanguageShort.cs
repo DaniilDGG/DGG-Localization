@@ -34,5 +34,20 @@ namespace DGGLocalization.Data
         /// Returns the identifier of the language.
         /// </summary>
         public static implicit operator string(LanguageShort language) => language?._languageCode;
+        
+        public static bool operator ==(LanguageShort a, LanguageShort b) => a?.LanguageCode == b?.LanguageCode;
+        public static bool operator !=(LanguageShort a, LanguageShort b) => !(a == b);
+        
+        protected bool Equals(LanguageShort other) => _languageCode == other._languageCode;
+
+        public override bool Equals(object obj)
+        {
+            if (obj is null) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            
+            return obj.GetType() == GetType() && Equals((LanguageShort)obj);
+        }
+
+        public override int GetHashCode() => LanguageCode?.GetHashCode() ?? 0;
     }
 }
