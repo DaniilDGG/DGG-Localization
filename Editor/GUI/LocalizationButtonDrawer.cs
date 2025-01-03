@@ -10,15 +10,28 @@ namespace DGGLocalization.Editor.GUI
     [CustomPropertyDrawer(typeof(LocalizationStringAttribute))]
     public class LocalizationButtonDrawer : PropertyDrawer
     {
+        #region Constants
+
+        private const float ButtonHeight = 20f;
+        private const float Padding = 2f;
+        
+        #endregion
+        
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             EditorGUI.PropertyField(position, property, label);
+            
+            var buttonRect = new Rect(position.x, position.y + EditorGUI.GetPropertyHeight(property) + Padding, position.width, ButtonHeight);
 
-            if (!UnityEngine.GUI.Button(new Rect(position.x, position.y + EditorGUI.GetPropertyHeight(property) + 2, position.width, 20), "Open Localization")) return;
+            if (!UnityEngine.GUI.Button(buttonRect, "Open Localization")) return;
             
             var localizationKey = property.stringValue;
-            
             LocalizationEditor.OpenLocalizationSetting(localizationKey);
+        }
+        
+        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+        {
+            return EditorGUI.GetPropertyHeight(property, label, true) + ButtonHeight + Padding;
         }
     }
 }
