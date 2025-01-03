@@ -8,7 +8,7 @@ using DGGLocalization.Data;
 using DGGLocalization.Loaders;
 using UnityEngine;
 
-[assembly: InternalsVisibleTo("AD_LocalizationEditor")]
+[assembly: InternalsVisibleTo("AD_LocalizationEditor"), InternalsVisibleTo("AD_LocalizationEditorXLSX")]
 namespace DGGLocalization
 {
     public static partial class LocalizationController
