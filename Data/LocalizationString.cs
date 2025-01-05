@@ -13,7 +13,7 @@ namespace DGGLocalization.Data
 
         [SerializeField] private string _value;
 
-        #region Propeties
+        #region Properties
 
         /// <summary>
         /// Localization Key.

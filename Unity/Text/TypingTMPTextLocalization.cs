@@ -28,7 +28,7 @@ namespace DGGLocalization.Unity.Text
         private bool _requiredFinish;
         private bool _isTyping;
 
-        #region Propeties
+        #region Properties
 
         public bool IsTyping => _isTyping;
         public bool IsFull => !_isTyping;

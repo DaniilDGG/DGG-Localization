@@ -20,7 +20,7 @@ namespace DGGLocalization.Unity.Base
         
         public event UnityAction<string> OnSwitchLanguage;
 
-        #region Propeties
+        #region Properties
 
         public string LocalizationCode => _localizationCode;
 

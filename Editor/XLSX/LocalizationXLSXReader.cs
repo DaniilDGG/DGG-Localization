@@ -19,7 +19,7 @@ namespace DGGLocalization.Editor.XLSX
         private static string _filePath = Path.Combine(Application.dataPath, "localization.xlsx");
         private static IWorkbook _workbook;
 
-        [MenuItem("Localization/Import XLSX")]
+        [MenuItem(MenuConstants.Import + "/XLSX", false, MenuConstants.ImportPriority)]
         private static void ReadLocalizationInFile()
         {
             _filePath = EditorUtility.OpenFilePanel("Localization file", "Assets", "xlsx");

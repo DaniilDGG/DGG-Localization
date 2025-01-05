@@ -21,7 +21,7 @@ namespace DGGLocalization.Data
         [JsonProperty] private List<LocalizationData> _localizations = new();
         [JsonProperty] private Language[] _languages = {new("en", "english")};
 
-        #region Propeties
+        #region Properties
 
         [JsonIgnore] public Guid GUID => _guid;
 

@@ -30,7 +30,7 @@ namespace DGGLocalization.Editor.Windows
 
         #endregion
         
-        #region Propeties
+        #region Properties
         
         public override string DisplayName => "Localization settings";
 
@@ -62,6 +62,8 @@ namespace DGGLocalization.Editor.Windows
 
         private void CreateGUI()
         {
+            _codeField = TextInputHelper.CreateTextInput("localizationCode", "Code: ", _visualElementCode);
+            
             var continueButton = new Button
             {
                 text = "Continue"
@@ -73,9 +75,7 @@ namespace DGGLocalization.Editor.Windows
                 Continue();
             };
             _visualElementCode.Add(continueButton);
-
-            _codeField = TextInputHelper.CreateTextInput("localizationCode", "Code: ", _visualElementCode);
-
+            
             _content.Add(_visualElementCode);
         }
 

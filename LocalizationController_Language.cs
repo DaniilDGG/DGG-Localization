@@ -13,7 +13,7 @@ namespace DGGLocalization
         private static Language[] _languages = Array.Empty<Language>();
         private static Language _currentLanguage;
 
-        #region Propeties
+        #region Properties
 
         /// <summary>
         /// Get languages loaded.

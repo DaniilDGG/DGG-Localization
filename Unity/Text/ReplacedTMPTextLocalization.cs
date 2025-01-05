@@ -34,7 +34,7 @@ namespace DGGLocalization.Unity.Text
             [SerializeField] private string _original;
             [SerializeField] private string _replacement;
 
-            #region Propeties
+            #region Properties
 
             public string Original => _original;
             public string Replacement => _replacement;

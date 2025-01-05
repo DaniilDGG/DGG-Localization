@@ -13,7 +13,7 @@ namespace DGGLocalization.Config
 
         [SerializeField] private string _localizationFile = "localization.loc";
         
-        #region Propeties
+        #region Properties
 
         private string MainPath { get; } = Application.streamingAssetsPath;
         
