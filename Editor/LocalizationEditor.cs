@@ -19,7 +19,7 @@ namespace DGGLocalization.Editor
 
         private static List<(Localization data, string displayName)> _dates = new();
         
-        #region Propeties
+        #region Properties
 
         public static List<(Localization data, string displayName)> Localizations => _dates;
 

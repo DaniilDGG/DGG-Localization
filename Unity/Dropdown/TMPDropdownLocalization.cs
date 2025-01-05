@@ -21,7 +21,7 @@ namespace DGGLocalization.Unity.Dropdown
         
         private const string CustomCode = "customCode";
 
-        #region Propeties
+        #region Properties
 
         /// <summary>
         /// Using ADD()/REMOVE() will not affect the dropdown. To change the items you need to use SetItems() method.

@@ -17,7 +17,7 @@ namespace DGGLocalization.Editor.Helpers
 
         #endregion
 
-        #region Propeties
+        #region Properties
 
         /// <summary>
         /// Displayed window name in the editor.

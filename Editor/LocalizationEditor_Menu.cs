@@ -20,12 +20,12 @@ namespace DGGLocalization.Editor
 
         #region Items
 
-        [MenuItem("Localization/Language settings")]
+        [MenuItem(MenuConstants.Settings + "/Languages", false, MenuConstants.SettingsPriority)]
         private static void LanguagesSetting() => LanguagesWindow.ShowWindow();
 
-        [MenuItem("Localization/Localization settings")]
+        [MenuItem(MenuConstants.Settings + "/Localizations", false, MenuConstants.SettingsPriority)]
         private static void HandleLocalizationSetting() => LocalizationSetting();
-        [MenuItem("Localization/Words Count")]
+        [MenuItem(MenuConstants.Statistics + "/Words Count")]
         private static void GetWordsCount()
         {
             foreach (var container in Localizations)

@@ -14,7 +14,7 @@ namespace DGGLocalization.Data
 
         [SerializeField, JsonProperty] private string _languageName;
 
-        #region Propeties
+        #region Properties
 
         /// <summary>
         /// The displayed language name.

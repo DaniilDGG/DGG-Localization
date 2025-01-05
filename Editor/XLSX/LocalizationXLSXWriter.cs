@@ -17,7 +17,7 @@ namespace DGGLocalization.Editor.XLSX
         private static string _filePath = Path.Combine(Application.dataPath, "localization.xlsx");
         private const int WidthColumn = 64 * 256;
         
-        [MenuItem("Localization/Export to XLSX")]
+        [MenuItem(MenuConstants.Export + "/XLSX", false, MenuConstants.ExportPriority)]
         private static void WriteLocalizationInFile()
         {
             var localization = LocalizationSelectWindow.Open();
