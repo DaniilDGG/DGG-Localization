@@ -24,14 +24,14 @@ namespace DGGLocalization.Unity.Dropdown
         #region Properties
 
         /// <summary>
-        /// Using ADD()/REMOVE() will not affect the dropdown. To change the items you need to use SetItems() method.
+        /// Dropdown Items. To change the items you need to use SetItems() method.
         /// </summary>
-        public List<string> StringItems => _items.ConvertAll(item => item.Value);
+        public IReadOnlyList<string> StringItems => _items.ConvertAll(item => item.Value);
         
         /// <summary>
-        /// Using ADD()/REMOVE() will not affect the dropdown. To change the items you need to use SetItems() method.
+        /// Dropdown Items. To change the items you need to use SetItems() method.
         /// </summary>
-        public List<LocalizationString> Items => _items;
+        public IReadOnlyList<LocalizationString> Items => _items;
 
         #endregion
 
