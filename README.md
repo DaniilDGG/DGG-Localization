@@ -1,6 +1,8 @@
 # DGG Localization
 Modular localization system for the Unity engine.
 
+Full documentation: https://dark-dgg.gitbook.io/dgg-localization
+
 # Installation via UPM
 
 First, install UniTask: https://github.com/Cysharp/UniTask?ysclid=lulo5ve1dr734166736736#upm-package  
