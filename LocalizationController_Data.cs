@@ -35,7 +35,7 @@ namespace DGGLocalization
         {
             var localization = GetLocalization(localizationCode);
 
-            return localization.GetTargetLocalization(GetCurrentLanguage());
+            return localization?.GetTargetLocalization(GetCurrentLanguage()) ?? new LanguageData(new LanguageShort(""),"Localization is null!");
         }
     }
 }
