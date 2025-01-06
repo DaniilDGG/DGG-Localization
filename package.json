@@ -5,9 +5,9 @@
   "description": "Package for localization",
   "unity": "2020.3",
   "unityRelease": "0f1",
-  "documentationUrl": "",
+  "documentationUrl": "https://dark-dgg.gitbook.io/dgg-localization",
   "changelogUrl": "",
-  "licensesUrl": "",
+  "licensesUrl": "https://github.com/DaniilDGG/DGG-Localization/blob/main/LICENSE",
   "dependencies": {
     "com.unity.textmeshpro": "3.0.6",
     "com.cysharp.unitask" : "2.4.0",
