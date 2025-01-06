@@ -86,6 +86,8 @@ namespace DGGLocalization.Unity.Text
             if (IsTyping) _symbolsCount = 0;
             else Typing(_typingText);
         }
+
+        public void StopTyping() => _requiredFinish = true;
         
         #endregion
         
@@ -122,7 +124,5 @@ namespace DGGLocalization.Unity.Text
             
             OnEndTyping?.Invoke();
         }
-
-        public void StopTyping() => _requiredFinish = true;
     }
 }
