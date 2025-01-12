@@ -1,20 +1,44 @@
 # DGG Localization
-Modular localization system for the Unity engine.
 
-Full documentation: https://dark-dgg.gitbook.io/dgg-localization
+A modular localization system for the Unity engine.
 
-# Installation via UPM
+📚 **Full Documentation**: [DGG Localization Docs](https://dark-dgg.gitbook.io/dgg-localization)
 
-First, install UniTask: https://github.com/Cysharp/UniTask?ysclid=lulo5ve1dr734166736736#upm-package  
-Then, install this package via git URL: https://github.com/DaniilDGG/DGG-Localization.git
+---
 
-# How to Use
+## Installation via UPM
 
-The default loader loads all localization files whose paths (relative to StreamingAssets) are specified in the LocalizationProfile, created in the Resources folder.  
-If this is not sufficient, you can create your own implementation of ILocalizationLoader.
+1. **Install UniTask**  
+   [UniTask GitHub Repository](https://github.com/Cysharp/UniTask?ysclid=lulo5ve1dr734166736736#upm-package)
 
-First, you need to set the languages used in localization via Localization/Language settings.
-After that, the system is ready to work; all that remains is to define localization keys and place localization components in the scene.
+2. **Install DGG Localization**  
+   Add the package via this Git URL:  
+   [DGG Localization GitHub Repository](https://github.com/DaniilDGG/DGG-Localization.git)
 
-To change the language, use LocalizationController.SwitchLanguage(int) or LocalizationController.SwitchLanguage(string). Example: Demo Scene.  
-Additionally, XLSX import and export are supported for editing localizations outside the Unity editor.
+---
+
+## How to Use
+
+1. **Load Localization Files**  
+   By default, the loader processes all localization files listed in the `LocalizationProfile`. This profile must be created in the `Resources` folder and specifies file paths relative to `StreamingAssets`.  
+   Need more control? Implement your own loader by creating a custom `ILocalizationLoader`.
+
+2. **Set Up Languages**  
+   Configure the languages used in your project under `Localization/Settings/Languages`. Once configured, the system is ready to use.
+
+3. **Define Keys and Add Components**  
+   Define your localization keys and place localization components in your scene.
+
+4. **Switch Languages**  
+   Change the active language using:  
+   - `LocalizationController.SwitchLanguage(int languageIndex)`  
+   - `LocalizationController.SwitchLanguage(string languageName)`  
+
+   💡 **Example**: Check the **Demo Scene** for implementation details.
+
+5. **XLSX Import/Export**  
+   Edit localization data outside Unity by importing/exporting XLSX files.
+
+---
+
+Start localizing your Unity project effortlessly with **DGG Localization**!
