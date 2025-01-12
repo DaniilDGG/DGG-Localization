@@ -13,7 +13,7 @@ A modular localization system for the Unity engine.
 
 2. **Install DGG Localization**  
    Add the package via this Git URL:  
-   [DGG Localization GitHub Repository](https://github.com/DaniilDGG/DGG-Localization.git)
+   https://github.com/DaniilDGG/DGG-Localization.git
 
 ---
 
