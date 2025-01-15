@@ -16,6 +16,12 @@ namespace DGGLocalization
     [LocalizationLoader]
     public class ProfileLoader : ILocalizationLoader
     {
+        #region Fields
+
+        private readonly Dictionary<Guid, LocalizationProfile> _cached = new();
+
+        #endregion
+        
         public List<(Localization, string)> GetLocalizationDates()
         {
             var profiles = Resources.LoadAll<LocalizationProfile>("");
@@ -35,6 +41,7 @@ namespace DGGLocalization
                     localization.SetLocalization(new Language[]{new ("EN", "english")});
                     
                     dates.Add((localization, $"[P]{profile.name}"));
+                    _cached[localization.GUID] = profile;
                     
                     WriteLocalizationData(localization, path);
                     
@@ -43,8 +50,11 @@ namespace DGGLocalization
                 
                 var json = File.ReadAllText(path);
                 var data = JsonConvert.DeserializeObject<Localization>(json);
+
+                if (data == null) continue;
                 
-                if (data != null) dates.Add((data, $"[P]{profile.name}"));
+                dates.Add((data, $"[P]{profile.name}"));
+                _cached[data.GUID] = profile;
             }
 
             return dates;
@@ -54,6 +64,13 @@ namespace DGGLocalization
         {
             var profiles = Resources.LoadAll<LocalizationProfile>("");
 
+            if (FindInCache(data.GUID, out var cachedProfile))
+            {
+                WriteLocalizationData(data, cachedProfile.LocalizationPath);
+
+                return true;
+            }
+            
             foreach (var profile in profiles)
             {
                 var path = profile.LocalizationPath;
@@ -62,8 +79,12 @@ namespace DGGLocalization
                 
                 var json = File.ReadAllText(path);
                 var localization = JsonConvert.DeserializeObject<Localization>(json);
+
+                if (localization == null) continue;
                 
-                if (localization == null || localization.GUID != data.GUID) continue;
+                _cached[localization.GUID] = profile;
+                
+                if (localization.GUID != data.GUID) continue;
 
                 WriteLocalizationData(data, path);
 
@@ -73,6 +94,32 @@ namespace DGGLocalization
             return false;
         }
 
+        private bool FindInCache(Guid guid, out LocalizationProfile profile)
+        {
+            if (!_cached.TryGetValue(guid, out profile)) return false;
+            
+            if (profile == null) return false;
+
+            var path = profile.LocalizationPath;
+
+            if (!File.Exists(path))
+            {
+                _cached[guid] = null;
+                    
+                return false;
+            }
+                
+            var json = File.ReadAllText(path);
+            var localization = JsonConvert.DeserializeObject<Localization>(json);
+
+            if (localization.GUID == guid) return true;
+                
+            _cached[guid] = null;
+            _cached[localization.GUID] = profile;
+                    
+            return false;
+        }
+        
         private static void WriteLocalizationData(Localization data, string path)
         {
             var text = JsonConvert.SerializeObject(data, Formatting.Indented);

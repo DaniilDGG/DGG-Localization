@@ -73,6 +73,45 @@ namespace DGGLocalization
             
             _languages = languages.ToArray();
         }
+        
+        /// <summary>
+        /// Remove an additional localization package. WARNING: High performance cost, due to the need to enumerate all keys.
+        /// </summary>
+        public static void RemoveLocalization(Localization localization)
+        {
+            foreach (var data in localization.Localizations)
+            {
+                if (!_localizations.TryGetValue(data.LocalizationCode, out var target)) continue;
+
+                foreach (var languageData in data.Data)
+                {
+                    var indexToRemove = target.FindIndex(t => t.Language == languageData.Language);
+                    
+                    if (indexToRemove != -1)
+                    {
+                        if (target[indexToRemove].Localization != languageData.Localization) continue;
+                        
+                        target.RemoveAt(indexToRemove);
+                    }
+                }
+                
+                if (target.Count == 0) _localizations.Remove(data.LocalizationCode);
+            }
+            
+            var languages = _languages.ToList();
+
+            foreach (var language in localization.Languages)
+            {
+                if (_localizations.Values.All(localizationData => localizationData.All(data => data.Language != language)))
+                {
+                    languages.Remove(language);
+                }
+            }
+
+            _languages = languages.ToArray();
+            
+            if (!languages.Contains(_currentLanguage) && languages.Count > 0) SwitchLanguage(0);
+        }
 
         #endregion
     }

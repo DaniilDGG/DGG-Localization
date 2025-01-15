@@ -29,7 +29,7 @@ namespace DGGLocalization.Editor
 
         internal static void Reboot()
         {
-            _dates = Loader.LoadLocalizations();
+            _dates = Loader.LoadLocalizations(true);
             LocalizationController.Initialize(_dates);
             
             Debug.Log($"Used: {_dates.Count} packages.");
