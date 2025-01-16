@@ -25,7 +25,7 @@ namespace DGGLocalization.Editor
 
         [MenuItem(MenuConstants.Settings + "/Localizations", false, MenuConstants.SettingsPriority)]
         private static void HandleLocalizationSetting() => LocalizationSetting();
-        [MenuItem(MenuConstants.Statistics + "/Words Count")]
+        [MenuItem(MenuConstants.Statistics + "/Words Count", false,50)]
         private static void GetWordsCount()
         {
             foreach (var container in Localizations)
@@ -64,6 +64,9 @@ namespace DGGLocalization.Editor
                 }
             }
         }
+
+        [MenuItem(MenuConstants.Root + "/Reboot", false,100)]
+        private static void RebootLocalization() => Reboot();
 
         #endregion
 
