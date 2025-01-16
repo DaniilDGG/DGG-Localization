@@ -11,7 +11,7 @@ namespace DGGLocalization.Data
     public class LanguageShort
     {
         #region Fields
-
+        
         [SerializeField, JsonProperty] private string _languageCode;
 
         #region Properties
