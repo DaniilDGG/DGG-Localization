@@ -38,6 +38,7 @@ namespace DGGLocalization.Json
         
         // ReSharper disable once EmptyConstructor
         // Without this, there may be a post-build error when deserializing JSON.
+        [JsonConstructor]
         public LanguageConverter() {}
     }
 }
