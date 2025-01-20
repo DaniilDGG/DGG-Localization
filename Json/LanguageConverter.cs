@@ -35,5 +35,9 @@ namespace DGGLocalization.Json
                     throw new JsonSerializationException("Unexpected token type for LanguageShort.");
             }
         }
+        
+        // ReSharper disable once EmptyConstructor
+        // Without this, there may be a post-build error when deserializing JSON.
+        public LanguageConverter() {}
     }
 }
