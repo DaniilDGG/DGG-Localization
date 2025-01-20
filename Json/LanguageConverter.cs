@@ -5,13 +5,17 @@ using System;
 using DGGLocalization.Data;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using UnityEngine.Scripting;
 
 namespace DGGLocalization.Json
 {
+    [Preserve]
     public class LanguageConverter : JsonConverter<LanguageShort>
     {
+        [Preserve]
         public override void WriteJson(JsonWriter writer, LanguageShort value, JsonSerializer serializer) => writer.WriteValue(value.LanguageCode);
 
+        [Preserve]
         public override LanguageShort ReadJson(JsonReader reader, Type objectType, LanguageShort existingValue, bool hasExistingValue, JsonSerializer serializer)
         {
             switch (reader.TokenType)
@@ -38,7 +42,7 @@ namespace DGGLocalization.Json
         
         // ReSharper disable once EmptyConstructor
         // Without this, there may be a post-build error when deserializing JSON.
-        [JsonConstructor]
+        [JsonConstructor, Preserve]
         public LanguageConverter() {}
     }
 }

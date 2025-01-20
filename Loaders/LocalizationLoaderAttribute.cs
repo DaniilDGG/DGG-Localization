@@ -2,10 +2,11 @@
 //Licensed under the Apache License, Version 2.0
 
 using System;
+using UnityEngine.Scripting;
 
 namespace DGGLocalization.Loaders
 {
-    [AttributeUsage(AttributeTargets.Class)]
+    [AttributeUsage(AttributeTargets.Class), Preserve]
     public class LocalizationLoaderAttribute : Attribute
     {
         #region Fields

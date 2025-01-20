@@ -3,9 +3,11 @@
 
 using System.Collections.Generic;
 using DGGLocalization.Data;
+using UnityEngine.Scripting;
 
 namespace DGGLocalization.Loaders
 {
+    [Preserve]
     public interface ILocalizationLoader
     {
         /// <summary>
