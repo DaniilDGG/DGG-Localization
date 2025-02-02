@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using DGGLocalization.Json;
 using Newtonsoft.Json;
 using UnityEngine;
 
@@ -18,8 +19,8 @@ namespace DGGLocalization.Data
         [DefaultValue(typeof(Guid), "00000000-0000-0000-0000-000000000000")]
         private Guid _guid = Guid.NewGuid();
         
-        [JsonProperty] private List<LocalizationData> _localizations = new();
-        [JsonProperty] private Language[] _languages = {new("en", "english")};
+        [JsonProperty, JsonConverter(typeof(LocalizationsConverter))] private List<LocalizationData> _localizations = new();
+        [JsonProperty, JsonConverter(typeof(LanguagesConverter))] private Language[] _languages = {new("en", "english")};
 
         #region Properties
 

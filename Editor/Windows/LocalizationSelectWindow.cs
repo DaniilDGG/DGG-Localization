@@ -15,6 +15,8 @@ namespace DGGLocalization.Editor.Windows
         private List<(Localization data, string displayName)> _localizations = new();
         
         private Localization _localization;
+        
+        private Vector2 _scrollPosition = Vector2.zero;
 
         #endregion
         
@@ -59,6 +61,8 @@ namespace DGGLocalization.Editor.Windows
             GUILayout.Label("Choice localization package:", EditorStyles.boldLabel);
 
             GUILayout.Space(20);
+            
+            _scrollPosition = GUILayout.BeginScrollView(_scrollPosition, GUILayout.Width(250), GUILayout.Height(100)); 
 
             foreach (var localization in _localizations)
             {
@@ -68,6 +72,8 @@ namespace DGGLocalization.Editor.Windows
                     
                 Close();
             }
+            
+            GUILayout.EndScrollView();
         }
     }
 }

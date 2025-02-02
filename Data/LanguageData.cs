@@ -2,7 +2,6 @@
 //Licensed under the Apache License, Version 2.0
 
 using System;
-using DGGLocalization.Json;
 using Newtonsoft.Json;
 using UnityEngine;
 
@@ -12,8 +11,7 @@ namespace DGGLocalization.Data
     public struct LanguageData
     {
         #region Fields
-
-        [JsonConverter(typeof(LanguageConverter))]
+        
         [SerializeField, JsonProperty] private LanguageShort _language;
         [SerializeField, JsonProperty] private string _localization;
 
