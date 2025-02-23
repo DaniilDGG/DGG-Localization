@@ -72,6 +72,8 @@ namespace DGGLocalization
             }
             
             _languages = languages.ToArray();
+
+            if (_languages.Length > 0 && _currentLanguage == null) SwitchLanguage(0);
         }
         
         /// <summary>
