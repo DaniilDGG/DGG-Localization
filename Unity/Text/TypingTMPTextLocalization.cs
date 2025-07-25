@@ -106,6 +106,19 @@ namespace DGGLocalization.Unity.Text
             
             while (typingText.Length < text.Length && text == _typingText && !_requiredFinish)
             {
+				if (_tmp.richText && text[_symbolsCount] == '<')
+    			{
+        			var tagEnd = text.IndexOf('>', _symbolsCount);
+
+        			if (tagEnd == -1) continue;
+
+        			_symbolsCount = tagEnd + 1;
+        			typingText = text[.._symbolsCount];
+        			_tmp.text = typingText;
+
+        			continue;
+    			}
+
                 typingText = text[.._symbolsCount];
                 _tmp.text = typingText;
 
