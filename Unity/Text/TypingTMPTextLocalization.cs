@@ -154,6 +154,8 @@ namespace DGGLocalization.Unity.Text
 
                 _symbolsCount++;
             }
+            
+            if (token.IsCancellationRequested) return;
 
             if (_typingText != text) return;
             
