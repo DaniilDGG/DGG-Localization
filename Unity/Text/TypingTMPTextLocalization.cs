@@ -100,28 +100,30 @@ namespace DGGLocalization.Unity.Text
 
             _symbolsCount = 0;
             var typingText = "";
-            var index = 0;
+            var index = -1;
             _isTyping = true;
             
             OnStartTyping?.Invoke();
             
             while (typingText.Length < text.Length && text == _typingText && !_requiredFinish)
             {
-            if (_tmp.richText && text[index] == '<')
-    			{
-        			var tagEnd = text.IndexOf('>', _symbolsCount);
+                index++;
+                
+                if (_tmp.richText && index != text.Length && text[index] == '<')
+                {
+                    var tagEnd = text.IndexOf('>', _symbolsCount);
 
-        			if (tagEnd == -1) continue;
+                    if (tagEnd == -1) continue;
 
-        			_symbolsCount = tagEnd + 1;
+                    _symbolsCount = tagEnd + 1;
              
-              index = tagEnd + 1;
-        			typingText = text[.._symbolsCount];
+                    index = tagEnd;
+                    typingText = text[.._symbolsCount];
                     
-        			_tmp.text = typingText;
-              _symbolsCount++;
-        			continue;
-    			}
+                    _tmp.text = typingText;
+                    _symbolsCount++;
+                    continue;
+                }
 
                 typingText = text[.._symbolsCount];
                 _tmp.text = typingText;
@@ -129,7 +131,6 @@ namespace DGGLocalization.Unity.Text
                 await UniTask.Delay(TimeSpan.FromSeconds(_charTypingTime));
 
                 _symbolsCount++;
-                index++;
             }
 
             if (_typingText != text) return;
