@@ -2,6 +2,7 @@
 //Licensed under the Apache License, Version 2.0
 
 using System;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using DGGLocalization.Unity.Base;
 using TMPro;
@@ -21,6 +22,7 @@ namespace DGGLocalization.Unity.Text
         [SerializeField, Range(MinimumCharTypingTime, MaximumCharTypingTime)] private float _charTypingTime = 0.16f;
         
         private LocalizationInfo _info;
+        private CancellationTokenSource _source;
         
         private string _typingText;
         private int _symbolsCount;
@@ -66,6 +68,8 @@ namespace DGGLocalization.Unity.Text
             Typing(_info.GetLocalization());
         }
 
+        private void OnDestroy() => Dispose();
+
         #endregion
 
         #region Public Members
@@ -90,13 +94,29 @@ namespace DGGLocalization.Unity.Text
         public void StopTyping() => _requiredFinish = true;
         
         #endregion
+
+        private void Dispose()
+        {
+            if (_source == null) return;
+            
+            _source.Cancel();
+            _source.Dispose();
+            
+            _source = null;
+        }
         
         private async void Typing(string text)
         {
             _typingText = text;
             _requiredFinish = false;
 
+            Dispose();
+            
             if (string.IsNullOrEmpty(text)) return;
+            
+            _source = new CancellationTokenSource();
+            
+            var token = _source.Token;
 
             _symbolsCount = 0;
             var typingText = "";
@@ -129,6 +149,8 @@ namespace DGGLocalization.Unity.Text
                 _tmp.text = typingText;
 
                 await UniTask.Delay(TimeSpan.FromSeconds(_charTypingTime));
+                
+                if (token.IsCancellationRequested) return;
 
                 _symbolsCount++;
             }
