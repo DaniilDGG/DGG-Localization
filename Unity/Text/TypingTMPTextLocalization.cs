@@ -107,20 +107,19 @@ namespace DGGLocalization.Unity.Text
             
             while (typingText.Length < text.Length && text == _typingText && !_requiredFinish)
             {
-				if (_tmp.richText && text[index] == '<')
+            if (_tmp.richText && text[index] == '<')
     			{
         			var tagEnd = text.IndexOf('>', _symbolsCount);
 
         			if (tagEnd == -1) continue;
 
         			_symbolsCount = tagEnd + 1;
-                    
-                    index = tagEnd + 1;
+             
+              index = tagEnd + 1;
         			typingText = text[.._symbolsCount];
                     
         			_tmp.text = typingText;
-                    _symbolsCount++;
-                    
+              _symbolsCount++;
         			continue;
     			}
 
