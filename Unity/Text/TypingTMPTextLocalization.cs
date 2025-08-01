@@ -20,6 +20,7 @@ namespace DGGLocalization.Unity.Text
         
         [Space(30f)]
         [SerializeField, Range(MinimumCharTypingTime, MaximumCharTypingTime)] private float _charTypingTime = 0.16f;
+        [SerializeField] private DelayType _delayType;
         
         private LocalizationInfo _info;
         private CancellationTokenSource _source;
@@ -91,6 +92,16 @@ namespace DGGLocalization.Unity.Text
             else Typing(_typingText);
         }
 
+        public void SetDelayType(DelayType value, bool isRedraw = false)
+        {
+            _delayType = value;
+            
+            if (!isRedraw) return;
+            
+            if (IsTyping) _symbolsCount = 0;
+            else Typing(_typingText);
+        }
+
         public void StopTyping() => _requiredFinish = true;
         
         #endregion
@@ -148,7 +159,7 @@ namespace DGGLocalization.Unity.Text
                 typingText = text[.._symbolsCount];
                 _tmp.text = typingText;
 
-                await UniTask.Delay(TimeSpan.FromSeconds(_charTypingTime));
+                await UniTask.Delay(TimeSpan.FromSeconds(_charTypingTime), _delayType);
                 
                 if (token.IsCancellationRequested) return;
 
