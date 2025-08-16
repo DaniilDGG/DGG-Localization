@@ -17,6 +17,23 @@ namespace DGGLocalization
         #endregion
 
         /// <summary>
+        /// Checks if a localization exists for the given code.
+        /// </summary>
+        /// <param name="localizationCode">Unique localization identifier.</param>
+        /// <returns>True if localization exists</returns>
+        public static bool HasLocalization(string localizationCode)
+        {
+            var localization = GetLocalization(localizationCode);
+            
+            if (localization == null) return false;
+
+            var language = GetCurrentLanguage();
+            var currentData = localization.GetTargetLocalization(language);
+            
+            return currentData.Language == language;
+        }
+            
+        /// <summary>
         /// Obtain localization when a localization code is available.
         /// </summary>
         /// <param name="localizationCode">localization code, is a unique localization identifier.</param>
