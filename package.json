@@ -1,6 +1,6 @@
 {
   "name": "com.dark_dgg.dgglocalization",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "displayName": "DGG Localization",
   "description": "Package for localization",
   "unity": "2020.3",
